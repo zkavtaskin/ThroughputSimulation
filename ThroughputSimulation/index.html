@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Throughput Simulation</title>
+    <link rel="stylesheet" href="app.css" type="text/css" />
+    <script src="Metaphor/MovePolicies/BatchMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/ChaosStopStartMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/DoubleSequentialMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/IMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/LargeStopStartMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/MediumStopStartMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/SequentialMovePolicy.js"></script>
+    <script src="Metaphor/MovePolicies/TinyStopStartMovePolicy.js"></script>
+    <script src="Metaphor/ControlCenter.js"></script>
+    <script src="Metaphor/Train.js"></script>
+    <script src="BallModel.js"></script>
+    <script src="StatsModel.js"></script>
+    <script src="VisualFlowPresenter.js"></script>
+    <script src="VisualFlowView.js"></script>
+    <script src="App.js"></script>
+    <script src="http://code.jquery.com/jquery-2.2.3.js"></script>
+</head>
+<body>
+    <h1>Throughput Simulation</h1>
+
+    <div id="content">
+
+        <div class="simulationView" id="simulationViewBatch">
+            <h2 id="simulationName">Batch Move</h2>
+            <div class="buttons">
+                <input type="button" value="Play" id="play" />
+                <input type="button" value="Stop" id="stop"/>
+            </div>
+            <div class="simulationVisualiser" id="simulationVisualiser"></div>
+            <div class="simulationStatistics" id="simulationStatistics">
+                <div>
+                    <span class="title">Average lead time (sec):</span>
+                    <span class="metric" id="statsLeadTime">...</span>
+                </div>
+                <div>
+                    <span class="title">Running time (sec):</span>
+                    <span class="metric" id="statsRunningTime">...</span>
+                </div>
+                <div>
+                    <span class="title">Interlocks:</span>
+                    <span class="metric" id="statsInterlocks">...</span>
+                </div>
+                <div>
+                    <span class="title">Total Arrived:</span>
+                    <span class="metric" id="statsArrived">...</span>
+                </div>
+                <div>
+                    <span class="title">Delivered per second:</span>
+                    <span class="metric" id="statsThroughputRate">...</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</body>
+</html>
