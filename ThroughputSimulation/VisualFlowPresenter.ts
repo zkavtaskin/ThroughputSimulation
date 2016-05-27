@@ -16,7 +16,7 @@ class VisualFlowPresenter {
 
     start: number;
     flowDistance: number;
-    controlCenter: ControlCenter;
+    controlCenter: ControlCenter = null;
     movePolicy: IMovePolicy;
     intervalId: number;
 
@@ -73,13 +73,16 @@ class VisualFlowPresenter {
     }
 
     onPlay(): void {
-        this.controlCenter = new ControlCenter(this.flowDistance);
-        this.start = performance.now();
-        this.intervalId = setInterval(this.continueSimulationProxy, 100 * (this.flowDistance + 1));
+        if (this.controlCenter == null) {
+            this.controlCenter = new ControlCenter(this.flowDistance);
+            this.start = performance.now();
+            this.intervalId = setInterval(this.continueSimulationProxy, 100 * (this.flowDistance + 1));
+        }
     }
 
     onStop(): void {
         clearInterval(this.intervalId);
+        this.controlCenter = null;
         this.view.Reset();
         this.ballHash = [];
     }

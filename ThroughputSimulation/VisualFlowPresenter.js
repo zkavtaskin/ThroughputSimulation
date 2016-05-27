@@ -5,6 +5,7 @@ var VisualFlowPresenter = (function () {
         this.ballHash = [];
         this.colors = ["yellow", "pink", "red", "grey",
             "black", "blue", "orange", "brown", "green", "purple"];
+        this.controlCenter = null;
         this.onTrainMovedProxy = function (train) {
             _this.onTrainMoved.apply(_this, [train]);
         };
@@ -42,12 +43,15 @@ var VisualFlowPresenter = (function () {
         this.view.UpdateStats(stats);
     };
     VisualFlowPresenter.prototype.onPlay = function () {
-        this.controlCenter = new ControlCenter(this.flowDistance);
-        this.start = performance.now();
-        this.intervalId = setInterval(this.continueSimulationProxy, 100 * (this.flowDistance + 1));
+        if (this.controlCenter == null) {
+            this.controlCenter = new ControlCenter(this.flowDistance);
+            this.start = performance.now();
+            this.intervalId = setInterval(this.continueSimulationProxy, 100 * (this.flowDistance + 1));
+        }
     };
     VisualFlowPresenter.prototype.onStop = function () {
         clearInterval(this.intervalId);
+        this.controlCenter = null;
         this.view.Reset();
         this.ballHash = [];
     };
