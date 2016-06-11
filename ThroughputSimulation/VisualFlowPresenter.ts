@@ -43,6 +43,7 @@
         this.flowDistance = flowDistance;
 
         this.view = view;
+        this.view.SetFlowName(this.movePolicy.GetName());
         this.view.AddEventPlay(this.onPlayProxy);
         this.view.AddEventStop(this.onStopProxy);
     }

@@ -68,6 +68,7 @@ var VisualFlowPresenter = (function () {
         this.movePolicy = movePolicy;
         this.flowDistance = flowDistance;
         this.view = view;
+        this.view.SetFlowName(this.movePolicy.GetName());
         this.view.AddEventPlay(this.onPlayProxy);
         this.view.AddEventStop(this.onStopProxy);
     }
@@ -128,6 +129,12 @@ var VisualFlowPresenter = (function () {
     };
     return VisualFlowPresenter;
 }());
+var DataSeries = (function () {
+    function DataSeries() {
+        this.data = new Array();
+    }
+    return DataSeries;
+}());
 var VisualFlowView = (function () {
     function VisualFlowView(simulationViewId) {
         var _this = this;
@@ -137,6 +144,8 @@ var VisualFlowView = (function () {
         this.onStopProxy = function () { };
         this.onPlayHandler = function () { };
         this.onStopHandler = function () { };
+        this.dataSeries = new DataSeries();
+        this.iterationSamplerLastNumber = 0;
         this.simulationViewId = simulationViewId;
         $(this.simulationViewId).width(this.ballSize * 15);
         this.onPlayProxy = function (eventObject) {
@@ -196,7 +205,18 @@ var VisualFlowView = (function () {
     VisualFlowView.prototype.RemoveBall = function (ball) {
         $(this.simulationViewId + " #_" + ball.id).remove();
     };
+    VisualFlowView.prototype.SetFlowName = function (name) {
+        this.dataSeries.label = name;
+    };
     VisualFlowView.prototype.UpdateStats = function (stats) {
+        var index = Math.floor((stats.RunningTime / 1000 / 5));
+        if (this.dataSeries.data[index] == null) {
+            this.dataSeries.data[index] = [index, stats.Arrived - this.iterationSamplerLastNumber];
+        }
+        else {
+            this.dataSeries.data[index] = [index, this.dataSeries.data[index][1] + (stats.Arrived - this.iterationSamplerLastNumber)];
+        }
+        this.iterationSamplerLastNumber = stats.Arrived;
         if ($(this.simulationViewId + " #simulationStatistics").length) {
             $(this.simulationViewId + " #statsLeadTime").text(Math.round(stats.Leadtime / 1000));
             $(this.simulationViewId + " #statsInterlocks").text(stats.Interlocks);
@@ -204,6 +224,9 @@ var VisualFlowView = (function () {
             $(this.simulationViewId + " #statsRunningTime").text(Math.round(stats.RunningTime / 1000));
             $(this.simulationViewId + " #statsThroughputRate").text((stats.Arrived / (stats.RunningTime / 1000)).toPrecision(2));
         }
+    };
+    VisualFlowView.prototype.GetDataSeries = function () {
+        return this.dataSeries;
     };
     VisualFlowView.prototype.Reset = function () {
         if ($(this.simulationViewId + " #simulationStatistics").length) {
@@ -216,6 +239,11 @@ var VisualFlowView = (function () {
         }
     };
     return VisualFlowView;
+}());
+var SimulationPresenter = (function () {
+    function SimulationPresenter() {
+    }
+    return SimulationPresenter;
 }());
 var StatsModel = (function () {
     function StatsModel(leadtime, interlocks, arrived, runningTime) {

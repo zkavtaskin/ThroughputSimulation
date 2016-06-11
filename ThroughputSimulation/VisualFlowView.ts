@@ -1,4 +1,10 @@
 ﻿/// <reference path="Scripts/typings/jquery/jquery.d.ts" />
+/// <reference path="Scripts/typings/flot/jquery.flot.d.ts" />
+
+class DataSeries implements jquery.flot.dataSeries {
+    data: Array<Array<number>> = new Array<Array<number>>();
+    label: string;
+}
 
 class VisualFlowView {
 
@@ -12,6 +18,9 @@ class VisualFlowView {
 
     onPlayHandler: { (): void } = () => { };
     onStopHandler: { (): void } = () => { };
+
+    dataSeries: DataSeries = new DataSeries();
+    iterationSamplerLastNumber: number = 0;
 
     constructor(simulationViewId: string) {
         this.simulationViewId = simulationViewId;
@@ -90,7 +99,21 @@ class VisualFlowView {
         $(this.simulationViewId + " #_" + ball.id).remove();
     }
 
+    SetFlowName(name: string): void {
+        this.dataSeries.label = name;
+    }
+
     UpdateStats(stats: StatsModel): void {
+
+        let index: number = Math.floor((stats.RunningTime / 1000 / 5));
+
+        if (this.dataSeries.data[index] == null) {
+            this.dataSeries.data[index] = [index, stats.Arrived - this.iterationSamplerLastNumber];
+        } else {
+            this.dataSeries.data[index] = [index, this.dataSeries.data[index][1] + (stats.Arrived - this.iterationSamplerLastNumber)];
+        }
+        this.iterationSamplerLastNumber = stats.Arrived;
+
         if ($(this.simulationViewId + " #simulationStatistics").length) {
             $(this.simulationViewId + " #statsLeadTime").text(Math.round(stats.Leadtime / 1000));
             $(this.simulationViewId + " #statsInterlocks").text(stats.Interlocks);
@@ -98,6 +121,11 @@ class VisualFlowView {
             $(this.simulationViewId + " #statsRunningTime").text(Math.round(stats.RunningTime / 1000));
             $(this.simulationViewId + " #statsThroughputRate").text((stats.Arrived / (stats.RunningTime / 1000)).toPrecision(2));
         }
+
+    }
+
+    GetDataSeries(): DataSeries {
+        return this.dataSeries;
     }
 
     Reset(): void {

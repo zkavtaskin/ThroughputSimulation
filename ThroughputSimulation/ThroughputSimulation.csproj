@@ -72,6 +72,7 @@
     <TypeScriptCompile Include="StatsModel.ts" />
     <Content Include="App.js" />
     <TypeScriptCompile Include="VisualFlowPresenter.ts" />
+    <TypeScriptCompile Include="SimulationPresenter.ts" />
     <TypeScriptCompile Include="VisualFlowView.ts" />
     <Content Include="AppStats.js" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />

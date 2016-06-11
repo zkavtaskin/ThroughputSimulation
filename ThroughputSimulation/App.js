@@ -16,5 +16,26 @@
 /// <reference path="Metaphor/MovePolicies/TinyStopStartMovePolicy.ts" />
 
 window.onload = function () {
-    var flowPresenterBatch = new VisualFlowPresenter(new VisualFlowView("#simulationView"), new BatchMovePolicy(15, 3), 15);
+    /*
+    $.plot("#plot", [{ label: "Foo", data: [[10, 1], [17, -14], [30, 5]] },
+  { label: "Bar", data: [[11, 13], [19, 11], [30, -7]] }
+    ]);
+    */
+   // $.plot("#plot", [{ data:[]}]);
+
+    //let plot: jquery.flot.plot = $.plot($("#plot"), [this.dataSeries]);
+
+
+    var flowView1 = new VisualFlowView("#simulationView1");
+    var flowPresenter1 = new VisualFlowPresenter(flowView1, new ChaosStopStartMovePolicy(), 15);
+
+    var flowView2 = new VisualFlowView("#simulationView2");
+    var flowPresenter2 = new VisualFlowPresenter(flowView2, new SequentialMovePolicy(), 15);
+
+
+    setInterval(function () {
+        var dataSeries1 = flowView1.GetDataSeries();
+        var dataSeries2 = flowView2.GetDataSeries();
+        $.plot("#plot", [dataSeries1, dataSeries2]);
+    }, 1000);
 };

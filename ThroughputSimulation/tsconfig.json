@@ -11,6 +11,7 @@
     "CompletionChain.ts",
     "VisualFlowPresenter.ts",
     "VisualFlowView.ts",
+    "SimulationPresenter.ts",
     "StatsModel.ts",
     "Metaphor/Train.ts",
     "Metaphor/ControlCenter.ts",

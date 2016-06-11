@@ -1,0 +1,8 @@
+﻿class SimulationPresenter {
+
+    constructor() {
+
+
+    }
+
+}
