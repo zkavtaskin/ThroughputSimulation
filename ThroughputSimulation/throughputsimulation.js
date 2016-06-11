@@ -49,6 +49,7 @@ var VisualFlowPresenter = (function () {
         this.colors = ["yellow", "pink", "red", "grey",
             "black", "blue", "orange", "brown", "green", "purple"];
         this.controlCenter = null;
+        this.stopping = false;
         this.onTrainMovedProxy = function (train) {
             _this.onTrainMoved.apply(_this, [train]);
         };
@@ -57,9 +58,6 @@ var VisualFlowPresenter = (function () {
         };
         this.onTrainBlockedProxy = function (train) {
             _this.onTrainBlocked.apply(_this, [train]);
-        };
-        this.continueSimulationProxy = function () {
-            _this.continueSimulation.apply(_this);
         };
         this.onPlayProxy = function () {
             _this.onPlay.apply(_this);
@@ -81,22 +79,33 @@ var VisualFlowPresenter = (function () {
             this.onTrainAdded(train);
         }
         this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy, this.onTrainBlockedProxy);
-        this.view.RunAnimations();
-        var stats = new StatsModel(this.controlCenter.GetAverageTrainJourneyTicks(), this.controlCenter.GetInterlocks(), this.controlCenter.GetTrainsReachedDestination(), performance.now() - this.start);
-        this.view.UpdateStats(stats);
+        var myself = this;
+        this.view.RunAnimations(function () {
+            var stats = new StatsModel(myself.controlCenter.GetAverageTrainJourneyTicks(), myself.controlCenter.GetInterlocks(), myself.controlCenter.GetTrainsReachedDestination(), performance.now() - myself.start);
+            myself.view.UpdateStats(stats);
+            if (!myself.stopping) {
+                myself.continueSimulation();
+            }
+            else {
+                myself.stop();
+            }
+        });
     };
     VisualFlowPresenter.prototype.onPlay = function () {
         if (this.controlCenter == null) {
             this.controlCenter = new ControlCenter(this.flowDistance);
             this.start = performance.now();
-            this.intervalId = setInterval(this.continueSimulationProxy, 100 * (this.flowDistance + 1));
+            this.continueSimulation();
         }
     };
     VisualFlowPresenter.prototype.onStop = function () {
-        clearInterval(this.intervalId);
+        this.stopping = true;
+    };
+    VisualFlowPresenter.prototype.stop = function () {
         this.controlCenter = null;
-        this.view.Reset();
         this.ballHash = [];
+        this.view.Reset();
+        this.stopping = false;
     };
     VisualFlowPresenter.prototype.onTrainAdded = function (train) {
         this.ballHash[train.Id] =
@@ -177,10 +186,11 @@ var VisualFlowView = (function () {
                 .fadeIn(50, completed);
         });
     };
-    VisualFlowView.prototype.RunAnimations = function () {
+    VisualFlowView.prototype.RunAnimations = function (callBack) {
         var myself = this;
         this.completionChain.Run(function () {
             myself.completionChain.Reset();
+            callBack();
         });
     };
     VisualFlowView.prototype.RemoveBall = function (ball) {

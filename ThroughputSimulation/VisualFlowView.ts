@@ -78,10 +78,11 @@ class VisualFlowView {
 
     }
 
-    RunAnimations(): void {
+    RunAnimations(callBack: { () : void }): void {
         let myself: VisualFlowView = this;
         this.completionChain.Run(() => {
             myself.completionChain.Reset();
+            callBack();
         });
     }
 

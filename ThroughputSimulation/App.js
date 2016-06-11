@@ -15,13 +15,6 @@
 /// <reference path="Metaphor/MovePolicies/SequentialMovePolicy.ts" />
 /// <reference path="Metaphor/MovePolicies/TinyStopStartMovePolicy.ts" />
 
-window.onload = () => {
-
-    let flowPresenterBatch: VisualFlowPresenter =
-        new VisualFlowPresenter(
-            new VisualFlowView("#simulationViewBatch"),
-            new SequentialMovePolicy(),
-            15
-        );
-
+window.onload = function () {
+    var flowPresenterBatch = new VisualFlowPresenter(new VisualFlowView("#simulationView"), new BatchMovePolicy(15, 3), 15);
 };

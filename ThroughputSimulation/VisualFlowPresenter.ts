@@ -6,7 +6,6 @@
     onPlayProxy: () => void;
     onStopProxy: () => void;
 
-    continueSimulationProxy: () => void;
     ballHash: { [id: number]: BallModel } = [];
     view: VisualFlowView;
     colors: Array<string> = ["yellow", "pink", "red", "grey",
@@ -16,7 +15,7 @@
     flowDistance: number;
     controlCenter: ControlCenter = null;
     movePolicy: IMovePolicy;
-    intervalId: number;
+    stopping: boolean = false;
 
     constructor(view: VisualFlowView, movePolicy: IMovePolicy, flowDistance: number) {
 
@@ -30,10 +29,6 @@
 
         this.onTrainBlockedProxy = (train: Train) => {
             this.onTrainBlocked.apply(this, [train]);
-        };
-
-        this.continueSimulationProxy = () => {
-            this.continueSimulation.apply(this);
         };
 
         this.onPlayProxy = () => {
@@ -60,29 +55,42 @@
             this.onTrainAdded(train);
         }
         this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy, this.onTrainBlockedProxy);
-        this.view.RunAnimations();
-        let stats: StatsModel = new StatsModel(
-            this.controlCenter.GetAverageTrainJourneyTicks(),
-            this.controlCenter.GetInterlocks(),
-            this.controlCenter.GetTrainsReachedDestination(),
-            performance.now() - this.start
-        );
-        this.view.UpdateStats(stats);
+
+        let myself: VisualFlowPresenter = this;
+
+        this.view.RunAnimations(function () {
+            let stats: StatsModel = new StatsModel(
+                myself.controlCenter.GetAverageTrainJourneyTicks(),
+                myself.controlCenter.GetInterlocks(),
+                myself.controlCenter.GetTrainsReachedDestination(),
+                performance.now() - myself.start
+            );
+            myself.view.UpdateStats(stats);
+            if (!myself.stopping) {
+                myself.continueSimulation();
+            } else {
+                myself.stop();
+            }
+        });
     }
 
     onPlay(): void {
         if (this.controlCenter == null) {
             this.controlCenter = new ControlCenter(this.flowDistance);
             this.start = performance.now();
-            this.intervalId = setInterval(this.continueSimulationProxy, 100 * (this.flowDistance + 1));
+            this.continueSimulation();
         }
     }
 
     onStop(): void {
-        clearInterval(this.intervalId);
+        this.stopping = true;
+    }
+
+    stop(): void {
         this.controlCenter = null;
-        this.view.Reset();
         this.ballHash = [];
+        this.view.Reset();
+        this.stopping = false;
     }
 
     onTrainAdded(train: Train): void {

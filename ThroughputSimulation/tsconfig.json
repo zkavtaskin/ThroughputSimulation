@@ -21,6 +21,7 @@
     "Metaphor/MovePolicies/LargeStopStartMovePolicy.ts",
     "Metaphor/MovePolicies/MediumStopStartMovePolicy.ts",
     "Metaphor/MovePolicies/SequentialMovePolicy.ts",
-    "Metaphor/MovePolicies/TinyStopStartMovePolicy.ts"
+    "Metaphor/MovePolicies/TinyStopStartMovePolicy.ts",
+    "Metaphor/MovePolicies/SequentialMovePolicy.ts"
   ]
 }

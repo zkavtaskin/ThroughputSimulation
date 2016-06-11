@@ -70,10 +70,10 @@
     <TypeScriptCompile Include="CompletionChain.ts" />
     <TypeScriptCompile Include="Scripts\typings\flot\jquery.flot.d.ts" />
     <TypeScriptCompile Include="StatsModel.ts" />
-    <TypeScriptCompile Include="App.ts" />
+    <Content Include="App.js" />
     <TypeScriptCompile Include="VisualFlowPresenter.ts" />
     <TypeScriptCompile Include="VisualFlowView.ts" />
-    <TypeScriptCompile Include="AppStats.ts" />
+    <Content Include="AppStats.js" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Metaphor\Train.ts" />
     <TypeScriptCompile Include="Metaphor\ControlCenter.ts" />
