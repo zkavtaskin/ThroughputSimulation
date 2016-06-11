@@ -1,7 +1,4 @@
-﻿/// <reference path="Scripts/typings/jquery/jquery.d.ts" />
-
-
-class BallModel {
+﻿class BallModel {
     id: number;
     position: number;
     color: string;

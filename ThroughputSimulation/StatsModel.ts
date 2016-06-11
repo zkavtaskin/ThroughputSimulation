@@ -1,6 +1,4 @@
-﻿/// <reference path="Scripts/typings/jquery/jquery.d.ts" />
-
-class StatsModel {
+﻿class StatsModel {
     Leadtime: number = 0;
     Interlocks: number = 0;
     Arrived: number = 0;

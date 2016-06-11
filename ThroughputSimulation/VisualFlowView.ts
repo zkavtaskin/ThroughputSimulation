@@ -5,8 +5,7 @@ class VisualFlowView {
     simulationViewId: string;
     ballSize: number = 46;
 
-    animationStack: Array<() => void> = [];
-    animationCounter: number = 0;
+    completionChain: CompletionChain = new CompletionChain();
 
     onPlayProxy: { (eventObject: JQueryEventObject): void } = () => { };
     onStopProxy: { (eventObject: JQueryEventObject): void } = () => { };
@@ -57,45 +56,33 @@ class VisualFlowView {
     }
 
     MoveBall(ball: BallModel): void {
-
-        let animationIndex: number = this.animationCounter;
-
         let myself: VisualFlowView = this;
-
-        this.animationStack[animationIndex] = () => {
-            $(this.simulationViewId + " #_" + ball.id).animate({
-                left: (ball.position * myself.ballSize) + "px"
-            }, {
+        this.completionChain.Add((completed: { () : void }) => {
+            $(this.simulationViewId + " #_" + ball.id).animate(
+                {
+                    left: (ball.position * myself.ballSize) + "px"
+                },
+                {
                     duration: 100,
-                    complete: function () {
-                        myself.animationChain(++animationIndex)
-                    }
-            });
-        };
-        this.animationCounter++;
+                    complete: completed
+                });
+        });
     }
 
     BlockedBall(ball: BallModel): void {
-
-        let animationIndex: number = this.animationCounter;
-
-        let myself: VisualFlowView = this;
-
-        this.animationStack[animationIndex] = () => {
+        this.completionChain.Add((completed: { (): void }) => {
             $(this.simulationViewId + " #_" + ball.id)
                 .fadeOut(50)
-                .fadeIn(50, function () {
-                    myself.animationChain(++animationIndex)
-                });
-        };
+                .fadeIn(50, completed);
+        });
 
-        this.animationCounter++;
     }
 
     RunAnimations(): void {
-        if (this.animationStack[0] != null) {
-            this.animationStack[0]();
-        }
+        let myself: VisualFlowView = this;
+        this.completionChain.Run(() => {
+            myself.completionChain.Reset();
+        });
     }
 
     RemoveBall(ball: BallModel): void {
@@ -103,28 +90,23 @@ class VisualFlowView {
     }
 
     UpdateStats(stats: StatsModel): void {
-        $(this.simulationViewId + " #statsLeadTime").text(Math.round(stats.Leadtime / 1000));
-        $(this.simulationViewId + " #statsInterlocks").text(stats.Interlocks);
-        $(this.simulationViewId + " #statsArrived").text(stats.Arrived);
-        $(this.simulationViewId + " #statsRunningTime").text(Math.round(stats.RunningTime / 1000));
-        $(this.simulationViewId + " #statsThroughputRate").text((stats.Arrived / (stats.RunningTime / 1000)).toPrecision(2));
+        if ($(this.simulationViewId + " #simulationStatistics").length) {
+            $(this.simulationViewId + " #statsLeadTime").text(Math.round(stats.Leadtime / 1000));
+            $(this.simulationViewId + " #statsInterlocks").text(stats.Interlocks);
+            $(this.simulationViewId + " #statsArrived").text(stats.Arrived);
+            $(this.simulationViewId + " #statsRunningTime").text(Math.round(stats.RunningTime / 1000));
+            $(this.simulationViewId + " #statsThroughputRate").text((stats.Arrived / (stats.RunningTime / 1000)).toPrecision(2));
+        }
     }
 
     Reset(): void {
-        $(this.simulationViewId + " #simulationVisualiser").html('');
-        $(this.simulationViewId + " #statsLeadTime").text('...');
-        $(this.simulationViewId + " #statsInterlocks").text('...');
-        $(this.simulationViewId + " #statsArrived").text('...');
-        $(this.simulationViewId + " #statsRunningTime").text('...');
-        $(this.simulationViewId + " #statsThroughputRate").text('...');
-    }
-
-    animationChain(index: number): void {
-        if (this.animationStack[index] != null) {
-            this.animationStack[index]();
-        } else {
-            this.animationStack = [];
-            this.animationCounter = 0;
+        if ($(this.simulationViewId + " #simulationStatistics").length) {
+            $(this.simulationViewId + " #simulationVisualiser").html('');
+            $(this.simulationViewId + " #statsLeadTime").text('...');
+            $(this.simulationViewId + " #statsInterlocks").text('...');
+            $(this.simulationViewId + " #statsArrived").text('...');
+            $(this.simulationViewId + " #statsRunningTime").text('...');
+            $(this.simulationViewId + " #statsThroughputRate").text('...');
         }
     }
 }

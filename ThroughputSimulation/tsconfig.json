@@ -1,0 +1,26 @@
+﻿{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outFile": "throughputsimulation.js",
+    "sourceMap": true
+  },
+  "files": [
+    "BallModel.ts",
+    "CompletionChain.ts",
+    "VisualFlowPresenter.ts",
+    "VisualFlowView.ts",
+    "StatsModel.ts",
+    "Metaphor/Train.ts",
+    "Metaphor/ControlCenter.ts",
+    "Metaphor/MovePolicies/BatchMovePolicy.ts",
+    "Metaphor/MovePolicies/ChaosStopStartMovePolicy.ts",
+    "Metaphor/MovePolicies/DoubleSequentialMovePolicy.ts",
+    "Metaphor/MovePolicies/IMovePolicy.ts",
+    "Metaphor/MovePolicies/LargeStopStartMovePolicy.ts",
+    "Metaphor/MovePolicies/MediumStopStartMovePolicy.ts",
+    "Metaphor/MovePolicies/SequentialMovePolicy.ts",
+    "Metaphor/MovePolicies/TinyStopStartMovePolicy.ts"
+  ]
+}

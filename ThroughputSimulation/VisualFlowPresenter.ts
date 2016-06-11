@@ -1,6 +1,4 @@
-﻿/// <reference path="Scripts/typings/jquery/jquery.d.ts" />
-
-class VisualFlowPresenter {
+﻿class VisualFlowPresenter {
 
     onTrainMovedProxy: (train: Train) => void;
     onTrainMovedAndArrivedProxy: (train: Train) => void;
