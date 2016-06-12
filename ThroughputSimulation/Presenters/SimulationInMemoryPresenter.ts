@@ -6,13 +6,22 @@
     stopping: boolean = false;
     turnCompleteHandler: { (): void } = () => { };
     stoppedHandler: { (): void } = () => { };
+    intervalId: number;
+
+    continueSimulationProxy: () => void;
+
+    constructor() {
+        this.continueSimulationProxy = () => {
+            this.continueSimulation.apply(this);
+        };
+    }
 
     public Play(controlCenter: ControlCenter, movePolicy: IMovePolicy): void {
         if (this.controlCenter == null) {
             this.controlCenter = controlCenter;
             this.movePolicy = movePolicy;
             this.start = performance.now();
-            this.continueSimulation();
+            this.intervalId = setInterval(this.continueSimulationProxy, 200);
         }
     }
 
@@ -34,14 +43,13 @@
 
         this.turnCompleteHandler();
 
-        if (!this.stopping) {
-            this.continueSimulation();
-        } else {
+        if (this.stopping) {
             this.stop();
         }
     }
 
     stop(): void {
+        clearInterval(this.intervalId);
         this.controlCenter = null;
         this.stopping = false;
         this.stoppedHandler();

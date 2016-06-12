@@ -41,11 +41,11 @@
             this.stop.apply(this);
         };
 
-        this.controlsView.AddEventPlay(this.onPlayProxy);
-        this.controlsView.AddEventStop(this.onStopProxy);
-
         this.simulationPresenter.AddEventTurnComplete(this.turnCompleteProxy);
         this.simulationPresenter.AddEventStopped(this.stopProxy);
+
+        this.controlsView.AddEventStop(this.onStopProxy);
+        this.controlsView.AddEventPlay(this.onPlayProxy);
     }
 
     turnComplete(): void {

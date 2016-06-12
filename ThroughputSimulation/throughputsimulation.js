@@ -85,10 +85,10 @@ var ThroughputPresenter = (function () {
         this.stopProxy = function () {
             _this.stop.apply(_this);
         };
-        this.controlsView.AddEventPlay(this.onPlayProxy);
-        this.controlsView.AddEventStop(this.onStopProxy);
         this.simulationPresenter.AddEventTurnComplete(this.turnCompleteProxy);
         this.simulationPresenter.AddEventStopped(this.stopProxy);
+        this.controlsView.AddEventStop(this.onStopProxy);
+        this.controlsView.AddEventPlay(this.onPlayProxy);
     }
     ThroughputPresenter.prototype.turnComplete = function () {
         var stats = new StatsModel(this.movePolicy.GetName(), this.controlCenter.GetAverageTrainJourneyTicks(), this.controlCenter.GetInterlocks(), this.controlCenter.GetTrainsReachedDestination(), performance.now() - this.start);
@@ -112,17 +112,21 @@ var ThroughputPresenter = (function () {
 }());
 var SimulationInMemoryPresenter = (function () {
     function SimulationInMemoryPresenter() {
+        var _this = this;
         this.controlCenter = null;
         this.stopping = false;
         this.turnCompleteHandler = function () { };
         this.stoppedHandler = function () { };
+        this.continueSimulationProxy = function () {
+            _this.continueSimulation.apply(_this);
+        };
     }
     SimulationInMemoryPresenter.prototype.Play = function (controlCenter, movePolicy) {
         if (this.controlCenter == null) {
             this.controlCenter = controlCenter;
             this.movePolicy = movePolicy;
             this.start = performance.now();
-            this.continueSimulation();
+            this.intervalId = setInterval(this.continueSimulationProxy, 200);
         }
     };
     SimulationInMemoryPresenter.prototype.Stop = function () {
@@ -138,14 +142,12 @@ var SimulationInMemoryPresenter = (function () {
         this.controlCenter.PutOnTrackNewTrain();
         this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy);
         this.turnCompleteHandler();
-        if (!this.stopping) {
-            this.continueSimulation();
-        }
-        else {
+        if (this.stopping) {
             this.stop();
         }
     };
     SimulationInMemoryPresenter.prototype.stop = function () {
+        clearInterval(this.intervalId);
         this.controlCenter = null;
         this.stopping = false;
         this.stoppedHandler();
