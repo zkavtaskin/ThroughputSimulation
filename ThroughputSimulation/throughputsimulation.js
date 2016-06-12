@@ -1,11 +1,3 @@
-var BallModel = (function () {
-    function BallModel(id, position, color) {
-        this.id = id;
-        this.position = position;
-        this.color = color;
-    }
-    return BallModel;
-}());
 var CompletionChain = (function () {
     function CompletionChain() {
         this.chainIndex = 0;
@@ -42,14 +34,134 @@ var CompletionChain = (function () {
     };
     return CompletionChain;
 }());
-var VisualFlowPresenter = (function () {
-    function VisualFlowPresenter(view, movePolicy, flowDistance) {
+var BallModel = (function () {
+    function BallModel(id, position, color) {
+        this.id = id;
+        this.position = position;
+        this.color = color;
+    }
+    return BallModel;
+}());
+var StatsModel = (function () {
+    function StatsModel(name, leadtime, interlocks, arrived, runningTime) {
+        this.Leadtime = 0;
+        this.Interlocks = 0;
+        this.Arrived = 0;
+        this.RunningTime = 0;
+        this.Name = name;
+        this.Leadtime = leadtime;
+        this.Interlocks = interlocks;
+        this.Arrived = arrived;
+        this.RunningTime = runningTime;
+    }
+    return StatsModel;
+}());
+var DataSeries = (function () {
+    function DataSeries(label) {
+        this.data = new Array();
+        this.label = label;
+    }
+    return DataSeries;
+}());
+var ThroughputPresenter = (function () {
+    function ThroughputPresenter(simulationPresenter, statsView, controlsView, movePolicy, flowDistance) {
+        var _this = this;
+        this.controlCenter = null;
+        this.stopping = false;
+        this.simulationPresenter = simulationPresenter;
+        this.movePolicy = movePolicy;
+        this.flowDistance = flowDistance;
+        this.statsView = statsView;
+        this.controlsView = controlsView;
+        this.onPlayProxy = function () {
+            _this.onPlay.apply(_this);
+        };
+        this.turnCompleteProxy = function () {
+            _this.turnComplete.apply(_this);
+        };
+        this.onPlayProxy = function () {
+            _this.onPlay.apply(_this);
+        };
+        this.stopProxy = function () {
+            _this.stop.apply(_this);
+        };
+        this.controlsView.AddEventPlay(this.onPlayProxy);
+        this.controlsView.AddEventStop(this.onStopProxy);
+        this.simulationPresenter.AddEventTurnComplete(this.turnCompleteProxy);
+        this.simulationPresenter.AddEventStopped(this.stopProxy);
+    }
+    ThroughputPresenter.prototype.turnComplete = function () {
+        var stats = new StatsModel(this.movePolicy.GetName(), this.controlCenter.GetAverageTrainJourneyTicks(), this.controlCenter.GetInterlocks(), this.controlCenter.GetTrainsReachedDestination(), performance.now() - this.start);
+        this.statsView.Update(stats);
+    };
+    ThroughputPresenter.prototype.onPlay = function () {
+        if (this.controlCenter == null) {
+            this.controlCenter = new ControlCenter(this.flowDistance);
+            this.start = performance.now();
+            this.simulationPresenter.Play(this.controlCenter, this.movePolicy);
+        }
+    };
+    ThroughputPresenter.prototype.onStop = function () {
+        this.simulationPresenter.Stop();
+    };
+    ThroughputPresenter.prototype.stop = function () {
+        this.controlCenter = null;
+        this.statsView.Clear();
+    };
+    return ThroughputPresenter;
+}());
+var SimulationInMemoryPresenter = (function () {
+    function SimulationInMemoryPresenter() {
+        this.controlCenter = null;
+        this.stopping = false;
+        this.turnCompleteHandler = function () { };
+        this.stoppedHandler = function () { };
+    }
+    SimulationInMemoryPresenter.prototype.Play = function (controlCenter, movePolicy) {
+        if (this.controlCenter == null) {
+            this.controlCenter = controlCenter;
+            this.movePolicy = movePolicy;
+            this.start = performance.now();
+            this.continueSimulation();
+        }
+    };
+    SimulationInMemoryPresenter.prototype.Stop = function () {
+        this.stopping = true;
+    };
+    SimulationInMemoryPresenter.prototype.AddEventTurnComplete = function (handler) {
+        this.turnCompleteHandler = handler;
+    };
+    SimulationInMemoryPresenter.prototype.AddEventStopped = function (handler) {
+        this.stoppedHandler = handler;
+    };
+    SimulationInMemoryPresenter.prototype.continueSimulation = function () {
+        this.controlCenter.PutOnTrackNewTrain();
+        this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy);
+        this.turnCompleteHandler();
+        if (!this.stopping) {
+            this.continueSimulation();
+        }
+        else {
+            this.stop();
+        }
+    };
+    SimulationInMemoryPresenter.prototype.stop = function () {
+        this.controlCenter = null;
+        this.stopping = false;
+        this.stoppedHandler();
+    };
+    return SimulationInMemoryPresenter;
+}());
+var SimulationVisualPresenter = (function () {
+    function SimulationVisualPresenter(flowView) {
         var _this = this;
         this.ballHash = [];
         this.colors = ["yellow", "pink", "red", "grey",
             "black", "blue", "orange", "brown", "green", "purple"];
         this.controlCenter = null;
         this.stopping = false;
+        this.turnCompleteHandler = function () { };
+        this.stoppedHandler = function () { };
         this.onTrainMovedProxy = function (train) {
             _this.onTrainMoved.apply(_this, [train]);
         };
@@ -59,31 +171,45 @@ var VisualFlowPresenter = (function () {
         this.onTrainBlockedProxy = function (train) {
             _this.onTrainBlocked.apply(_this, [train]);
         };
-        this.onPlayProxy = function () {
-            _this.onPlay.apply(_this);
-        };
-        this.onStopProxy = function () {
-            _this.onStop.apply(_this);
-        };
-        this.movePolicy = movePolicy;
-        this.flowDistance = flowDistance;
-        this.view = view;
-        this.view.SetFlowName(this.movePolicy.GetName());
-        this.view.AddEventPlay(this.onPlayProxy);
-        this.view.AddEventStop(this.onStopProxy);
+        this.flowView = flowView;
     }
-    VisualFlowPresenter.prototype.continueSimulation = function () {
+    SimulationVisualPresenter.prototype.Play = function (controlCenter, movePolicy) {
+        if (this.controlCenter == null) {
+            this.controlCenter = controlCenter;
+            this.movePolicy = movePolicy;
+            this.controlCenter.AddEventOnTrainBlocked(this.onTrainBlockedProxy);
+            this.start = performance.now();
+            this.continueSimulation();
+        }
+    };
+    SimulationVisualPresenter.prototype.Stop = function () {
+        this.stopping = true;
+    };
+    SimulationVisualPresenter.prototype.AddEventTurnComplete = function (handler) {
+        this.turnCompleteHandler = handler;
+    };
+    SimulationVisualPresenter.prototype.AddEventStopped = function (handler) {
+        this.stoppedHandler = handler;
+    };
+    SimulationVisualPresenter.prototype.stop = function () {
+        this.controlCenter = null;
+        this.movePolicy = null;
+        this.ballHash = [];
+        this.stopping = false;
+        this.flowView.Reset();
+        this.stoppedHandler();
+    };
+    SimulationVisualPresenter.prototype.continueSimulation = function () {
         var train = this.controlCenter.PutOnTrackNewTrain();
         if (train != null) {
             train.AddEventOnTrainMoved(this.onTrainMovedProxy);
             train.AddEventOnTrainMovedThenArrived(this.onTrainMovedAndArrivedProxy);
             this.onTrainAdded(train);
         }
-        this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy, this.onTrainBlockedProxy);
+        this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy);
         var myself = this;
-        this.view.RunAnimations(function () {
-            var stats = new StatsModel(myself.controlCenter.GetAverageTrainJourneyTicks(), myself.controlCenter.GetInterlocks(), myself.controlCenter.GetTrainsReachedDestination(), performance.now() - myself.start);
-            myself.view.UpdateStats(stats);
+        this.flowView.RunAnimations(function () {
+            myself.turnCompleteHandler();
             if (!myself.stopping) {
                 myself.continueSimulation();
             }
@@ -92,83 +218,34 @@ var VisualFlowPresenter = (function () {
             }
         });
     };
-    VisualFlowPresenter.prototype.onPlay = function () {
-        if (this.controlCenter == null) {
-            this.controlCenter = new ControlCenter(this.flowDistance);
-            this.start = performance.now();
-            this.continueSimulation();
-        }
-    };
-    VisualFlowPresenter.prototype.onStop = function () {
-        this.stopping = true;
-    };
-    VisualFlowPresenter.prototype.stop = function () {
-        this.controlCenter = null;
-        this.ballHash = [];
-        this.view.Reset();
-        this.stopping = false;
-    };
-    VisualFlowPresenter.prototype.onTrainAdded = function (train) {
+    SimulationVisualPresenter.prototype.onTrainAdded = function (train) {
         this.ballHash[train.Id] =
             new BallModel(train.Id, train.Position, this.colors[Math.round(Math.random() * 10 + 1)]);
-        this.view.AddBall(this.ballHash[train.Id]);
+        this.flowView.AddBall(this.ballHash[train.Id]);
     };
-    VisualFlowPresenter.prototype.onTrainMoved = function (train) {
+    SimulationVisualPresenter.prototype.onTrainMoved = function (train) {
         var ball = this.ballHash[train.Id];
         ball.position = train.Position;
-        this.view.MoveBall(this.ballHash[train.Id]);
+        this.flowView.MoveBall(this.ballHash[train.Id]);
     };
-    VisualFlowPresenter.prototype.onTrainBlocked = function (train) {
-        this.view.BlockedBall(this.ballHash[train.Id]);
+    SimulationVisualPresenter.prototype.onTrainBlocked = function (train) {
+        this.flowView.BlockedBall(this.ballHash[train.Id]);
     };
-    VisualFlowPresenter.prototype.onTrainMovedAndArrived = function (train) {
-        this.view.RemoveBall(this.ballHash[train.Id]);
+    SimulationVisualPresenter.prototype.onTrainMovedAndArrived = function (train) {
+        this.flowView.RemoveBall(this.ballHash[train.Id]);
         this.ballHash[train.Id] = null;
         train.RemoveEventOnTrainMoved(this.onTrainMovedProxy);
         train.RemoveEventOnTrainMovedThenArrived(this.onTrainMovedAndArrivedProxy);
     };
-    return VisualFlowPresenter;
-}());
-var DataSeries = (function () {
-    function DataSeries() {
-        this.data = new Array();
-    }
-    return DataSeries;
+    return SimulationVisualPresenter;
 }());
 var VisualFlowView = (function () {
     function VisualFlowView(simulationViewId) {
-        var _this = this;
         this.ballSize = 46;
         this.completionChain = new CompletionChain();
-        this.onPlayProxy = function () { };
-        this.onStopProxy = function () { };
-        this.onPlayHandler = function () { };
-        this.onStopHandler = function () { };
-        this.dataSeries = new DataSeries();
-        this.iterationSamplerLastNumber = 0;
         this.simulationViewId = simulationViewId;
         $(this.simulationViewId).width(this.ballSize * 15);
-        this.onPlayProxy = function (eventObject) {
-            _this.onPlay.apply(_this, [eventObject]);
-        };
-        this.onStopProxy = function (eventObject) {
-            _this.onStop.apply(_this, [eventObject]);
-        };
-        $(this.simulationViewId + " #play").click(this.onPlayProxy);
-        $(this.simulationViewId + " #stop").click(this.onStopProxy);
     }
-    VisualFlowView.prototype.onPlay = function (eventObject) {
-        this.onPlayHandler();
-    };
-    VisualFlowView.prototype.onStop = function (eventObject) {
-        this.onStopHandler();
-    };
-    VisualFlowView.prototype.AddEventPlay = function (handler) {
-        this.onPlayHandler = handler;
-    };
-    VisualFlowView.prototype.AddEventStop = function (handler) {
-        this.onStopHandler = handler;
-    };
     VisualFlowView.prototype.AddBall = function (ball) {
         var ballString = '<div id="_' + ball.id +
             '" class="ball" style="left:0px;background:' + ball.color +
@@ -205,18 +282,47 @@ var VisualFlowView = (function () {
     VisualFlowView.prototype.RemoveBall = function (ball) {
         $(this.simulationViewId + " #_" + ball.id).remove();
     };
-    VisualFlowView.prototype.SetFlowName = function (name) {
-        this.dataSeries.label = name;
+    VisualFlowView.prototype.Reset = function () {
+        $(this.simulationViewId + " #simulationVisualiser").html('');
     };
-    VisualFlowView.prototype.UpdateStats = function (stats) {
-        var index = Math.floor((stats.RunningTime / 1000 / 5));
-        if (this.dataSeries.data[index] == null) {
-            this.dataSeries.data[index] = [index, stats.Arrived - this.iterationSamplerLastNumber];
-        }
-        else {
-            this.dataSeries.data[index] = [index, this.dataSeries.data[index][1] + (stats.Arrived - this.iterationSamplerLastNumber)];
-        }
-        this.iterationSamplerLastNumber = stats.Arrived;
+    return VisualFlowView;
+}());
+var PhysicalControlsView = (function () {
+    function PhysicalControlsView(simulationViewId) {
+        var _this = this;
+        this.onPlayProxy = function () { };
+        this.onStopProxy = function () { };
+        this.onPlayHandler = [];
+        this.onStopHandler = [];
+        this.simulationViewId = simulationViewId;
+        this.onPlayProxy = function (eventObject) {
+            _this.onPlay.apply(_this, [eventObject]);
+        };
+        this.onStopProxy = function (eventObject) {
+            _this.onStop.apply(_this, [eventObject]);
+        };
+        $(this.simulationViewId + " #play").click(this.onPlayProxy);
+        $(this.simulationViewId + " #stop").click(this.onStopProxy);
+    }
+    PhysicalControlsView.prototype.onPlay = function (eventObject) {
+        this.onPlayHandler.forEach(function (h) { return h(); });
+    };
+    PhysicalControlsView.prototype.onStop = function (eventObject) {
+        this.onStopHandler.forEach(function (h) { return h(); });
+    };
+    PhysicalControlsView.prototype.AddEventPlay = function (handler) {
+        this.onPlayHandler.push(handler);
+    };
+    PhysicalControlsView.prototype.AddEventStop = function (handler) {
+        this.onStopHandler.push(handler);
+    };
+    return PhysicalControlsView;
+}());
+var TextStatsView = (function () {
+    function TextStatsView(simulationViewId) {
+        this.simulationViewId = simulationViewId;
+    }
+    TextStatsView.prototype.Update = function (stats) {
         if ($(this.simulationViewId + " #simulationStatistics").length) {
             $(this.simulationViewId + " #statsLeadTime").text(Math.round(stats.Leadtime / 1000));
             $(this.simulationViewId + " #statsInterlocks").text(stats.Interlocks);
@@ -225,12 +331,8 @@ var VisualFlowView = (function () {
             $(this.simulationViewId + " #statsThroughputRate").text((stats.Arrived / (stats.RunningTime / 1000)).toPrecision(2));
         }
     };
-    VisualFlowView.prototype.GetDataSeries = function () {
-        return this.dataSeries;
-    };
-    VisualFlowView.prototype.Reset = function () {
+    TextStatsView.prototype.Clear = function () {
         if ($(this.simulationViewId + " #simulationStatistics").length) {
-            $(this.simulationViewId + " #simulationVisualiser").html('');
             $(this.simulationViewId + " #statsLeadTime").text('...');
             $(this.simulationViewId + " #statsInterlocks").text('...');
             $(this.simulationViewId + " #statsArrived").text('...');
@@ -238,25 +340,68 @@ var VisualFlowView = (function () {
             $(this.simulationViewId + " #statsThroughputRate").text('...');
         }
     };
-    return VisualFlowView;
+    return TextStatsView;
 }());
-var SimulationPresenter = (function () {
-    function SimulationPresenter() {
+var AutoPlayControlsView = (function () {
+    function AutoPlayControlsView() {
     }
-    return SimulationPresenter;
+    AutoPlayControlsView.prototype.AddEventPlay = function (handler) {
+        handler();
+    };
+    AutoPlayControlsView.prototype.AddEventStop = function (handler) {
+    };
+    return AutoPlayControlsView;
 }());
-var StatsModel = (function () {
-    function StatsModel(leadtime, interlocks, arrived, runningTime) {
-        this.Leadtime = 0;
-        this.Interlocks = 0;
-        this.Arrived = 0;
-        this.RunningTime = 0;
-        this.Leadtime = leadtime;
-        this.Interlocks = interlocks;
-        this.Arrived = arrived;
-        this.RunningTime = runningTime;
+var ThroughputGlobalStatsView = (function () {
+    function ThroughputGlobalStatsView() {
+        this.iterationLastNumberMap = {};
+        this.dataSeriesMap = {};
+        this.keyIsAlreadyInTheStoreMap = {};
+        this.keys = new Array();
     }
-    return StatsModel;
+    ThroughputGlobalStatsView.prototype.Update = function (stats) {
+        if (!this.keyIsAlreadyInTheStoreMap[stats.Name]) {
+            this.keys.push(stats.Name);
+            this.keyIsAlreadyInTheStoreMap[stats.Name] = true;
+        }
+        var index = Math.floor((stats.RunningTime / 1000 / 5));
+        if (this.dataSeriesMap[stats.Name] == null) {
+            this.dataSeriesMap[stats.Name] = new DataSeries(stats.Name);
+        }
+        if (this.dataSeriesMap[stats.Name].data[index] == null) {
+            this.dataSeriesMap[stats.Name].data[index] = [index, stats.Arrived - this.iterationLastNumberMap[stats.Name]];
+        }
+        else {
+            this.dataSeriesMap[stats.Name].data[index] =
+                [index, this.dataSeriesMap[stats.Name].data[index][1] + (stats.Arrived - this.iterationLastNumberMap[stats.Name])];
+        }
+        this.iterationLastNumberMap[stats.Name] = stats.Arrived;
+    };
+    ThroughputGlobalStatsView.prototype.GetDataSeries = function () {
+        var serieses = new Array();
+        for (var _i = 0, _a = this.keys; _i < _a.length; _i++) {
+            var key = _a[_i];
+            serieses.push(this.dataSeriesMap[key]);
+        }
+        return serieses;
+    };
+    ThroughputGlobalStatsView.prototype.Clear = function () {
+        this.dataSeriesMap = {};
+        this.iterationLastNumberMap = {};
+    };
+    return ThroughputGlobalStatsView;
+}());
+var MultiPlexStatsView = (function () {
+    function MultiPlexStatsView(statsViews) {
+        this.statsViews = statsViews;
+    }
+    MultiPlexStatsView.prototype.Update = function (stats) {
+        this.statsViews.forEach(function (view) { return view.Update(stats); });
+    };
+    MultiPlexStatsView.prototype.Clear = function () {
+        this.statsViews.forEach(function (view) { return view.Clear(); });
+    };
+    return MultiPlexStatsView;
 }());
 var Train = (function () {
     function Train(trackDistance) {
@@ -317,6 +462,7 @@ var ControlCenter = (function () {
         this.trains = [];
         this.totalTicks = 0;
         this.trackDistance = 0;
+        this.onTrainBlockedHandler = function (train) { };
         this.trackDistance = trackDistance;
         this.onTrainMovedProxy = function (train) {
             _this.onTrainMoved.apply(_this, [train]);
@@ -336,7 +482,7 @@ var ControlCenter = (function () {
         }
         return null;
     };
-    ControlCenter.prototype.MoveAllTrainsOnTrack = function (movePolicy, onTrainBlocked) {
+    ControlCenter.prototype.MoveAllTrainsOnTrack = function (movePolicy) {
         var trainCount = this.trains.length;
         for (var i = 0; i < trainCount; i++) {
             var train = this.trains.shift();
@@ -346,7 +492,7 @@ var ControlCenter = (function () {
                 train.Move(distanceToMove);
             }
             else {
-                onTrainBlocked(train);
+                this.onTrainBlockedHandler(train);
                 this.trains.push(train);
                 this.interlockCount++;
             }
@@ -361,6 +507,9 @@ var ControlCenter = (function () {
         this.trainsReachedDestination++;
         train.RemoveEventOnTrainMoved(this.onTrainMovedProxy);
         train.RemoveEventOnTrainMovedThenArrived(this.onTrainMovedAndArrivedProxy);
+    };
+    ControlCenter.prototype.AddEventOnTrainBlocked = function (handler) {
+        this.onTrainBlockedHandler = handler;
     };
     ControlCenter.prototype.GetTrainsOnTrackCount = function () {
         return this.trains.length;

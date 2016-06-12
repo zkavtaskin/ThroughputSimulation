@@ -11,15 +11,19 @@ class ControlCenter {
     onTrainMovedProxy: (train: Train) => void;
     onTrainMovedAndArrivedProxy: (train: Train) => void;
 
+    onTrainBlockedHandler: { (train: Train): void } = (train : Train) => { };
+
     constructor(trackDistance: number)
     {
         this.trackDistance = trackDistance;
+
         this.onTrainMovedProxy = (train : Train) => {
             this.onTrainMoved.apply(this, [train]);
         };
         this.onTrainMovedAndArrivedProxy = (train: Train) => {
             this.onTrainMovedAndArrived.apply(this, [train]);
         };
+
     }
 
     PutOnTrackNewTrain() : Train
@@ -35,8 +39,7 @@ class ControlCenter {
         return null;
     }
 
-    public MoveAllTrainsOnTrack(movePolicy: IMovePolicy,
-        onTrainBlocked: (train: Train) => void): void
+    public MoveAllTrainsOnTrack(movePolicy: IMovePolicy): void
     {
         let trainCount: number = this.trains.length;
         for (let i : number = 0; i < trainCount; i++)
@@ -49,25 +52,27 @@ class ControlCenter {
                 train.Move(distanceToMove);
             }
             else {
-                onTrainBlocked(train);
+                this.onTrainBlockedHandler(train);
                 this.trains.push(train);
                 this.interlockCount++;
             }
         }
     }
 
-    private onTrainMoved(train : Train) : void
-    {
+    private onTrainMoved(train : Train) : void {
         this.positionMap[train.Position] = train;
         this.trains.push(train);
     }
 
-    private onTrainMovedAndArrived(train : Train) : void
-    {
+    private onTrainMovedAndArrived(train : Train) : void {
         this.totalTicks += train.GetElapsedTicks();
         this.trainsReachedDestination++;
         train.RemoveEventOnTrainMoved(this.onTrainMovedProxy);
         train.RemoveEventOnTrainMovedThenArrived(this.onTrainMovedAndArrivedProxy);
+    }
+
+    public AddEventOnTrainBlocked(handler: { (train: Train): void }): void {
+        this.onTrainBlockedHandler = handler;
     }
 
     public GetTrainsOnTrackCount(): number

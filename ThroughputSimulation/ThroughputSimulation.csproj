@@ -66,14 +66,25 @@
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="BallModel.ts" />
-    <TypeScriptCompile Include="CompletionChain.ts" />
+    <TypeScriptCompile Include="Models\BallModel.ts" />
+    <TypeScriptCompile Include="Helpers\CompletionChain.ts" />
+    <TypeScriptCompile Include="Views\IControlsView.ts" />
+    <TypeScriptCompile Include="Views\MultiPlexStatsView.ts" />
+    <TypeScriptCompile Include="Views\IStatsView.ts" />
+    <TypeScriptCompile Include="Views\AutoPlayControlsView.ts" />
     <TypeScriptCompile Include="Scripts\typings\flot\jquery.flot.d.ts" />
-    <TypeScriptCompile Include="StatsModel.ts" />
+    <TypeScriptCompile Include="Models\DataSeries.ts" />
+    <TypeScriptCompile Include="Helpers\HashMap.ts" />
+    <TypeScriptCompile Include="Presenters\ISimulationPresenter.ts" />
+    <TypeScriptCompile Include="Presenters\SimulationInMemoryPresenter.ts" />
+    <TypeScriptCompile Include="Presenters\SimulationVisualPresenter.ts" />
+    <TypeScriptCompile Include="Models\StatsModel.ts" />
     <Content Include="App.js" />
-    <TypeScriptCompile Include="VisualFlowPresenter.ts" />
-    <TypeScriptCompile Include="SimulationPresenter.ts" />
-    <TypeScriptCompile Include="VisualFlowView.ts" />
+    <TypeScriptCompile Include="Views\ThroughputGlobalStatsView.ts" />
+    <TypeScriptCompile Include="Presenters\ThroughputPresenter.ts" />
+    <TypeScriptCompile Include="Views\TextStatsView.ts" />
+    <TypeScriptCompile Include="Views\PhysicalControlsView.ts" />
+    <TypeScriptCompile Include="Views\VisualFlowView.ts" />
     <Content Include="AppStats.js" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Metaphor\Train.ts" />
@@ -97,6 +108,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>

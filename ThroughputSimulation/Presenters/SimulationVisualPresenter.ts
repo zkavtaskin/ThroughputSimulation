@@ -1,23 +1,25 @@
-﻿class VisualFlowPresenter {
+﻿class SimulationVisualPresenter implements ISimulationPresenter {
 
     onTrainMovedProxy: (train: Train) => void;
     onTrainMovedAndArrivedProxy: (train: Train) => void;
     onTrainBlockedProxy: (train: Train) => void;
-    onPlayProxy: () => void;
-    onStopProxy: () => void;
 
     ballHash: { [id: number]: BallModel } = [];
-    view: VisualFlowView;
+    flowView: VisualFlowView;
     colors: Array<string> = ["yellow", "pink", "red", "grey",
         "black", "blue", "orange", "brown", "green", "purple"];
+
+    movePolicy: IMovePolicy;
 
     start: number;
     flowDistance: number;
     controlCenter: ControlCenter = null;
-    movePolicy: IMovePolicy;
     stopping: boolean = false;
 
-    constructor(view: VisualFlowView, movePolicy: IMovePolicy, flowDistance: number) {
+    turnCompleteHandler: { (): void } = () => { };
+    stoppedHandler: { (): void } = () => { };
+
+    constructor(flowView: VisualFlowView) {
 
         this.onTrainMovedProxy = (train: Train) => {
             this.onTrainMoved.apply(this, [train]);
@@ -31,21 +33,39 @@
             this.onTrainBlocked.apply(this, [train]);
         };
 
-        this.onPlayProxy = () => {
-            this.onPlay.apply(this);
-        };
 
-        this.onStopProxy = () => {
-            this.onStop.apply(this);
-        };
+        this.flowView = flowView;
+    }
 
-        this.movePolicy = movePolicy;
-        this.flowDistance = flowDistance;
+    public Play(controlCenter: ControlCenter, movePolicy: IMovePolicy): void {
+        if (this.controlCenter == null) {
+            this.controlCenter = controlCenter;
+            this.movePolicy = movePolicy;
+            this.controlCenter.AddEventOnTrainBlocked(this.onTrainBlockedProxy);
+            this.start = performance.now();
+            this.continueSimulation();
+        }
+    }
 
-        this.view = view;
-        this.view.SetFlowName(this.movePolicy.GetName());
-        this.view.AddEventPlay(this.onPlayProxy);
-        this.view.AddEventStop(this.onStopProxy);
+    public Stop(): void {
+        this.stopping = true;
+    }
+
+    public AddEventTurnComplete(handler: { (): void }) : void {
+        this.turnCompleteHandler = handler;
+    }
+
+    public AddEventStopped(handler: { (): void }): void {
+        this.stoppedHandler = handler;
+    }
+
+    private stop(): void {
+        this.controlCenter = null;
+        this.movePolicy = null;
+        this.ballHash = [];
+        this.stopping = false;
+        this.flowView.Reset();
+        this.stoppedHandler();
     }
 
     continueSimulation(): void {
@@ -55,18 +75,14 @@
             train.AddEventOnTrainMovedThenArrived(this.onTrainMovedAndArrivedProxy);
             this.onTrainAdded(train);
         }
-        this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy, this.onTrainBlockedProxy);
+        this.controlCenter.MoveAllTrainsOnTrack(this.movePolicy);
 
-        let myself: VisualFlowPresenter = this;
+        let myself: SimulationVisualPresenter = this;
 
-        this.view.RunAnimations(function () {
-            let stats: StatsModel = new StatsModel(
-                myself.controlCenter.GetAverageTrainJourneyTicks(),
-                myself.controlCenter.GetInterlocks(),
-                myself.controlCenter.GetTrainsReachedDestination(),
-                performance.now() - myself.start
-            );
-            myself.view.UpdateStats(stats);
+        this.flowView.RunAnimations(function () {
+
+            myself.turnCompleteHandler();
+
             if (!myself.stopping) {
                 myself.continueSimulation();
             } else {
@@ -75,46 +91,26 @@
         });
     }
 
-    onPlay(): void {
-        if (this.controlCenter == null) {
-            this.controlCenter = new ControlCenter(this.flowDistance);
-            this.start = performance.now();
-            this.continueSimulation();
-        }
-    }
-
-    onStop(): void {
-        this.stopping = true;
-    }
-
-    stop(): void {
-        this.controlCenter = null;
-        this.ballHash = [];
-        this.view.Reset();
-        this.stopping = false;
-    }
-
     onTrainAdded(train: Train): void {
         this.ballHash[train.Id] =
             new BallModel(train.Id, train.Position, this.colors[Math.round(Math.random() * 10 + 1)]);
-        this.view.AddBall(this.ballHash[train.Id]);
+        this.flowView.AddBall(this.ballHash[train.Id]);
     }
 
     onTrainMoved(train: Train): void {
         let ball: BallModel = this.ballHash[train.Id];
         ball.position = train.Position;
-        this.view.MoveBall(this.ballHash[train.Id]);
+        this.flowView.MoveBall(this.ballHash[train.Id]);
     }
 
     onTrainBlocked(train: Train): void {
-        this.view.BlockedBall(this.ballHash[train.Id]);
+        this.flowView.BlockedBall(this.ballHash[train.Id]);
     }
 
     onTrainMovedAndArrived(train: Train): void {
-        this.view.RemoveBall(this.ballHash[train.Id]);
+        this.flowView.RemoveBall(this.ballHash[train.Id]);
         this.ballHash[train.Id] = null;
         train.RemoveEventOnTrainMoved(this.onTrainMovedProxy);
         train.RemoveEventOnTrainMovedThenArrived(this.onTrainMovedAndArrivedProxy);
     }
-
 }

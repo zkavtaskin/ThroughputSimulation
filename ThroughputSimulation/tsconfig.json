@@ -7,12 +7,27 @@
     "sourceMap": true
   },
   "files": [
-    "BallModel.ts",
-    "CompletionChain.ts",
-    "VisualFlowPresenter.ts",
-    "VisualFlowView.ts",
-    "SimulationPresenter.ts",
-    "StatsModel.ts",
+    "Helpers/CompletionChain.ts",
+    "Helpers/HashMap.ts",
+
+    "Models/BallModel.ts",
+    "Models/StatsModel.ts",
+    "Models/DataSeries.ts",
+
+    "Presenters/ThroughputPresenter.ts",
+    "Presenters/SimulationInMemoryPresenter.ts",
+    "Presenters/SimulationVisualPresenter.ts",
+    "Presenters/ISimulationPresenter.ts",
+
+    "Views/IStatsView.ts",
+    "Views/VisualFlowView.ts",
+    "Views/IControlsView.ts",
+    "Views/PhysicalControlsView.ts",
+    "Views/TextStatsView.ts",
+    "Views/AutoPlayControlsView.ts",
+    "Views/ThroughputGlobalStatsView.ts",
+    "Views/MultiPlexStatsView.ts",
+
     "Metaphor/Train.ts",
     "Metaphor/ControlCenter.ts",
     "Metaphor/MovePolicies/BatchMovePolicy.ts",
