@@ -3,13 +3,13 @@ window.onload = function () {
     var trackDistance = 100;
     var numberOfIterations = 10000;
     var movePolicies = new Array();
-    movePolicies.push(new TinyStopStartMovePolicy());
-    movePolicies.push(new MediumStopStartMovePolicy());
-    movePolicies.push(new LargeStopStartMovePolicy());
-    movePolicies.push(new ChaosStopStartMovePolicy());
-    movePolicies.push(new SequentialMovePolicy());
-    movePolicies.push(new DoubleSequentialMovePolicy());
+    movePolicies.push(new StuffJustHappensMovePolicy());
+    movePolicies.push(new ChaosMovePolicy());
+    movePolicies.push(new SinglePieceFlowMovePolicy());
     movePolicies.push(new BatchMovePolicy(trackDistance, 20));
+    movePolicies.push(new StuffJustHappensSlackMovePolicy(1));
+    movePolicies.push(new ChaosSlackMovePolicy(1));
+    movePolicies.push(new SinglePieceFlowSlackMovePolicy(1));
     document.writeln("-- Throughput Analysis, track distance: " + trackDistance + ", iterations: " + numberOfIterations + " --  <br/>");
     for (var _i = 0, movePolicies_1 = movePolicies; _i < movePolicies_1.length; _i++) {
         var movePolicy = movePolicies_1[_i];

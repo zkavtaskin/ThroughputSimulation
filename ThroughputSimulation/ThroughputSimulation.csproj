@@ -23,8 +23,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.css" />
+    <Content Include="AppStats.js" />
     <Content Include="index.html" />
     <None Include="Scripts\jquery-1.4.1-vsdoc.js" />
+    <Content Include="index_stats.html" />
     <Content Include="Scripts\flot\excanvas.js" />
     <Content Include="Scripts\flot\excanvas.min.js" />
     <Content Include="Scripts\flot\jquery.colorhelpers.js" />
