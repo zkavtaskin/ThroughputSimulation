@@ -31,13 +31,13 @@
     "Metaphor/Train.ts",
     "Metaphor/ControlCenter.ts",
     "Metaphor/MovePolicies/BatchMovePolicy.ts",
-    "Metaphor/MovePolicies/ChaosStopStartMovePolicy.ts",
-    "Metaphor/MovePolicies/DoubleSequentialMovePolicy.ts",
+    "Metaphor/MovePolicies/ChaosMovePolicy.ts",
     "Metaphor/MovePolicies/IMovePolicy.ts",
-    "Metaphor/MovePolicies/LargeStopStartMovePolicy.ts",
-    "Metaphor/MovePolicies/MediumStopStartMovePolicy.ts",
-    "Metaphor/MovePolicies/SequentialMovePolicy.ts",
-    "Metaphor/MovePolicies/TinyStopStartMovePolicy.ts",
-    "Metaphor/MovePolicies/SequentialMovePolicy.ts"
+    "Metaphor/MovePolicies/SinglePieceFlowMovePolicy.ts",
+    "Metaphor/MovePolicies/StuffJustHappensMovePolicy.ts",
+    "Metaphor/MovePolicies/StuffJustHappensSlackMovePolicy.ts",
+    "Metaphor/MovePolicies/ChaosSlackMovePolicy.ts",
+    "Metaphor/MovePolicies/SpaceMaker.ts",
+    "Metaphor/MovePolicies/SinglePieceFlowSlackMovePolicy.ts"
   ]
 }

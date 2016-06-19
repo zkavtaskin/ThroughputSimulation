@@ -529,88 +529,108 @@ var ControlCenter = (function () {
 }());
 var BatchMovePolicy = (function () {
     function BatchMovePolicy(distance, numberOfGroups) {
-        this.numToSkip = 0;
-        this.totalZeroCount = 0;
-        this.numToSkip = Math.round(distance / numberOfGroups);
+        this.spaceMaker = new SpaceMaker(Math.round(distance / numberOfGroups));
     }
     BatchMovePolicy.prototype.GetName = function () {
-        return "BatchMovePolicy";
+        return "Batch";
     };
-    BatchMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
-        if (currentPositionInTheQueue == 0) {
-            var isOdd = Math.floor(this.totalZeroCount / this.numToSkip) % 2 == 1;
-            this.totalZeroCount++;
-            if (isOdd)
-                return 0;
-        }
-        return 1;
+    BatchMovePolicy.prototype.GetDistance = function (positionInTheQueue) {
+        if (this.spaceMaker.CalcIfShouldSkipMoveToMakeSpace(positionInTheQueue))
+            return 0;
+        return Math.round((Math.random() * 10)) != 0 ? 1 : 0;
     };
     return BatchMovePolicy;
 }());
-var ChaosStopStartMovePolicy = (function () {
-    function ChaosStopStartMovePolicy() {
+var ChaosMovePolicy = (function () {
+    function ChaosMovePolicy() {
     }
-    ChaosStopStartMovePolicy.prototype.GetName = function () {
-        return "ChaosStopStartMovePolicy";
+    ChaosMovePolicy.prototype.GetName = function () {
+        return "Chaos";
     };
-    ChaosStopStartMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
+    ChaosMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
         return Math.round((Math.random() * 1)) * Math.round((Math.random() * 3) + 1);
     };
-    return ChaosStopStartMovePolicy;
+    return ChaosMovePolicy;
 }());
-var DoubleSequentialMovePolicy = (function () {
-    function DoubleSequentialMovePolicy() {
+var SinglePieceFlowMovePolicy = (function () {
+    function SinglePieceFlowMovePolicy() {
     }
-    DoubleSequentialMovePolicy.prototype.GetName = function () {
-        return "DoubleSequentialMovePolicy";
+    SinglePieceFlowMovePolicy.prototype.GetName = function () {
+        return "SinglePieceFlow";
     };
-    DoubleSequentialMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
-        return 2;
+    SinglePieceFlowMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
+        return Math.round((Math.random() * 10)) != 0 ? 1 : 0;
     };
-    return DoubleSequentialMovePolicy;
+    return SinglePieceFlowMovePolicy;
 }());
-var LargeStopStartMovePolicy = (function () {
-    function LargeStopStartMovePolicy() {
+var StuffJustHappensMovePolicy = (function () {
+    function StuffJustHappensMovePolicy() {
     }
-    LargeStopStartMovePolicy.prototype.GetName = function () {
-        return "LargeStopStartMovePolicy";
+    StuffJustHappensMovePolicy.prototype.GetName = function () {
+        return "StuffJustHappens";
     };
-    LargeStopStartMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
-        return Math.round((Math.random() * 1)) * 3;
-    };
-    return LargeStopStartMovePolicy;
-}());
-var MediumStopStartMovePolicy = (function () {
-    function MediumStopStartMovePolicy() {
-    }
-    MediumStopStartMovePolicy.prototype.GetName = function () {
-        return "MediumStopStartMovePolicy";
-    };
-    MediumStopStartMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
-        return Math.round((Math.random() * 1)) * 2;
-    };
-    return MediumStopStartMovePolicy;
-}());
-var SequentialMovePolicy = (function () {
-    function SequentialMovePolicy() {
-    }
-    SequentialMovePolicy.prototype.GetName = function () {
-        return "SequentialMovePolicy";
-    };
-    SequentialMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
-        return 1;
-    };
-    return SequentialMovePolicy;
-}());
-var TinyStopStartMovePolicy = (function () {
-    function TinyStopStartMovePolicy() {
-    }
-    TinyStopStartMovePolicy.prototype.GetName = function () {
-        return "TinyStopStartMovePolicy";
-    };
-    TinyStopStartMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
+    StuffJustHappensMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
         return Math.round((Math.random() * 1));
     };
-    return TinyStopStartMovePolicy;
+    return StuffJustHappensMovePolicy;
+}());
+var StuffJustHappensSlackMovePolicy = (function () {
+    function StuffJustHappensSlackMovePolicy(spaceSize) {
+        this.spaceMaker = new SpaceMaker(spaceSize);
+    }
+    StuffJustHappensSlackMovePolicy.prototype.GetName = function () {
+        return "StuffJustHappensSlack";
+    };
+    StuffJustHappensSlackMovePolicy.prototype.GetDistance = function (positionInTheQueue) {
+        if (this.spaceMaker.CalcIfShouldSkipMoveToMakeSpace(positionInTheQueue))
+            return 0;
+        return Math.round((Math.random() * 1));
+    };
+    return StuffJustHappensSlackMovePolicy;
+}());
+var ChaosSlackMovePolicy = (function () {
+    function ChaosSlackMovePolicy(spaceSize) {
+        this.spaceMaker = new SpaceMaker(spaceSize);
+    }
+    ChaosSlackMovePolicy.prototype.GetName = function () {
+        return "ChaosSlack";
+    };
+    ChaosSlackMovePolicy.prototype.GetDistance = function (positionInTheQueue) {
+        if (this.spaceMaker.CalcIfShouldSkipMoveToMakeSpace(positionInTheQueue))
+            return 0;
+        return Math.round((Math.random() * 1)) * Math.round((Math.random() * 3) + 1);
+    };
+    return ChaosSlackMovePolicy;
+}());
+var SpaceMaker = (function () {
+    function SpaceMaker(emptySpaceSize) {
+        this.emptySpaceSize = 0;
+        this.totalZeroCount = 0;
+        this.emptySpaceSize = emptySpaceSize;
+    }
+    SpaceMaker.prototype.CalcIfShouldSkipMoveToMakeSpace = function (positionInTheQueue) {
+        if (positionInTheQueue == 0) {
+            var isOdd = Math.floor(this.totalZeroCount / this.emptySpaceSize) % 2 == 1;
+            this.totalZeroCount++;
+            if (isOdd)
+                return true;
+        }
+        return false;
+    };
+    return SpaceMaker;
+}());
+var SinglePieceFlowSlackMovePolicy = (function () {
+    function SinglePieceFlowSlackMovePolicy(spaceSize) {
+        this.spaceMaker = new SpaceMaker(spaceSize);
+    }
+    SinglePieceFlowSlackMovePolicy.prototype.GetName = function () {
+        return "SinglePieceFlowSlack";
+    };
+    SinglePieceFlowSlackMovePolicy.prototype.GetDistance = function (positionInTheQueue) {
+        if (this.spaceMaker.CalcIfShouldSkipMoveToMakeSpace(positionInTheQueue))
+            return 0;
+        return Math.round((Math.random() * 10)) != 0 ? 1 : 0;
+    };
+    return SinglePieceFlowSlackMovePolicy;
 }());
 //# sourceMappingURL=throughputsimulation.js.map

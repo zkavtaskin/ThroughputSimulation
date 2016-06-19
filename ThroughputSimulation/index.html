@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <title>Throughput Simulation</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
+    <script src="http://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="Scripts/flot/jquery.flot.min.js"></script>
     <script src="throughputsimulation.js"></script>
     <script src="App.js"></script>
-    <script src="http://code.jquery.com/jquery-2.2.3.js"></script>
-    <script src="Scripts/flot/jquery.flot.js"></script>
 </head>
 <body>
     <h1>Throughput Simulation</h1>
@@ -52,6 +52,66 @@
         </div>
 
         <div class="simulationView" id="simulationView2">
+            <div class="buttons">
+                <input type="button" value="Play" id="play" />
+                <input type="button" value="Stop" id="stop" />
+            </div>
+            <div class="simulationVisualiser" id="simulationVisualiser"></div>
+            <div class="simulationStatistics" id="simulationStatistics">
+                <div>
+                    <span class="title">Average lead time (sec):</span>
+                    <span class="metric" id="statsLeadTime">...</span>
+                </div>
+                <div>
+                    <span class="title">Running time (sec):</span>
+                    <span class="metric" id="statsRunningTime">...</span>
+                </div>
+                <div>
+                    <span class="title">Interlocks:</span>
+                    <span class="metric" id="statsInterlocks">...</span>
+                </div>
+                <div>
+                    <span class="title">Total Arrived:</span>
+                    <span class="metric" id="statsArrived">...</span>
+                </div>
+                <div>
+                    <span class="title">Delivered per second:</span>
+                    <span class="metric" id="statsThroughputRate">...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulationView" id="simulationView3">
+            <div class="buttons">
+                <input type="button" value="Play" id="play" />
+                <input type="button" value="Stop" id="stop" />
+            </div>
+            <div class="simulationVisualiser" id="simulationVisualiser"></div>
+            <div class="simulationStatistics" id="simulationStatistics">
+                <div>
+                    <span class="title">Average lead time (sec):</span>
+                    <span class="metric" id="statsLeadTime">...</span>
+                </div>
+                <div>
+                    <span class="title">Running time (sec):</span>
+                    <span class="metric" id="statsRunningTime">...</span>
+                </div>
+                <div>
+                    <span class="title">Interlocks:</span>
+                    <span class="metric" id="statsInterlocks">...</span>
+                </div>
+                <div>
+                    <span class="title">Total Arrived:</span>
+                    <span class="metric" id="statsArrived">...</span>
+                </div>
+                <div>
+                    <span class="title">Delivered per second:</span>
+                    <span class="metric" id="statsThroughputRate">...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulationView" id="simulationView4">
             <div class="buttons">
                 <input type="button" value="Play" id="play" />
                 <input type="button" value="Stop" id="stop" />

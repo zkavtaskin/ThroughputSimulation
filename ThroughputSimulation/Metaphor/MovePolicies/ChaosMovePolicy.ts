@@ -1,8 +1,8 @@
 ﻿
-class ChaosStopStartMovePolicy implements IMovePolicy
+class ChaosMovePolicy implements IMovePolicy
 {
     public GetName(): string {
-        return "ChaosStopStartMovePolicy";
+        return "Chaos";
     }
 
     public GetDistance(currentPositionInTheQueue: number): number

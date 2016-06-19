@@ -1,8 +1,8 @@
 ﻿
-class TinyStopStartMovePolicy implements IMovePolicy
+class StuffJustHappensMovePolicy implements IMovePolicy
 {
     public GetName(): string {
-        return "TinyStopStartMovePolicy";
+        return "StuffJustHappens";
     }
 
     public GetDistance(currentPositionInTheQueue: number): number

@@ -24,7 +24,6 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="index.html" />
-    <Content Include="index_stats.html" />
     <None Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="Scripts\flot\excanvas.js" />
     <Content Include="Scripts\flot\excanvas.min.js" />
@@ -66,6 +65,10 @@
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Metaphor\MovePolicies\ChaosSlackMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\SinglePieceFlowSlackMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\SpaceMaker.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\StuffJustHappensSlackMovePolicy.ts" />
     <TypeScriptCompile Include="Models\BallModel.ts" />
     <TypeScriptCompile Include="Helpers\CompletionChain.ts" />
     <TypeScriptCompile Include="Views\IControlsView.ts" />
@@ -85,16 +88,12 @@
     <TypeScriptCompile Include="Views\TextStatsView.ts" />
     <TypeScriptCompile Include="Views\PhysicalControlsView.ts" />
     <TypeScriptCompile Include="Views\VisualFlowView.ts" />
-    <Content Include="AppStats.js" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Metaphor\Train.ts" />
     <TypeScriptCompile Include="Metaphor\ControlCenter.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\MediumStopStartMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\DoubleSequentialMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\SequentialMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\TinyStopStartMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\LargeStopStartMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\ChaosStopStartMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\SinglePieceFlowMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\StuffJustHappensMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\ChaosMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\BatchMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\IMovePolicy.ts" />
   </ItemGroup>

@@ -1,15 +1,15 @@
 ﻿
-class BatchMovePolicy implements IMovePolicy
+class SinglePieceFlowSlackMovePolicy implements IMovePolicy
 {
     spaceMaker: SpaceMaker;
 
-    constructor(distance : number, numberOfGroups : number)
-    {
-        this.spaceMaker = new SpaceMaker(Math.round(distance / numberOfGroups));
+    constructor(spaceSize: number) {
+        this.spaceMaker = new SpaceMaker(spaceSize);
     }
 
-    public GetName() : string {
-        return "Batch";
+
+    public GetName(): string {
+        return "SinglePieceFlowSlack";
     }
 
     public GetDistance(positionInTheQueue: number): number
@@ -20,4 +20,3 @@ class BatchMovePolicy implements IMovePolicy
         return Math.round((Math.random() * 10)) != 0 ? 1 : 0; 
     }
 }
-
