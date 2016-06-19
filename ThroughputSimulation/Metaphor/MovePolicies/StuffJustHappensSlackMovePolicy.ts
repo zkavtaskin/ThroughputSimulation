@@ -1,10 +1,10 @@
 ﻿
 class StuffJustHappensSlackMovePolicy implements IMovePolicy
 {
-    spaceMaker: SpaceMaker;
+    spaceMaker: AsymmetricSpaceMaker;
 
-    constructor(spaceSize: number) {
-        this.spaceMaker = new SpaceMaker(spaceSize);
+    constructor(spaceSize: number, groupSize: number) {
+        this.spaceMaker = new AsymmetricSpaceMaker(spaceSize, groupSize);
     }
 
     public GetName(): string {

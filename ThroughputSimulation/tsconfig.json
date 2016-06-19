@@ -37,7 +37,8 @@
     "Metaphor/MovePolicies/StuffJustHappensMovePolicy.ts",
     "Metaphor/MovePolicies/StuffJustHappensSlackMovePolicy.ts",
     "Metaphor/MovePolicies/ChaosSlackMovePolicy.ts",
-    "Metaphor/MovePolicies/SpaceMaker.ts",
+    "Metaphor/MovePolicies/SymmetricSpaceMaker.ts",
+    "Metaphor/MovePolicies/AsymmetricSpaceMaker.ts",
     "Metaphor/MovePolicies/SinglePieceFlowSlackMovePolicy.ts"
   ]
 }

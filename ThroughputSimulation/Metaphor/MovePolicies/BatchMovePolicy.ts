@@ -1,11 +1,11 @@
 ﻿
 class BatchMovePolicy implements IMovePolicy
 {
-    spaceMaker: SpaceMaker;
+    spaceMaker: SymmetricSpaceMaker;
 
-    constructor(distance : number, numberOfGroups : number)
+    constructor(emptySpaceSize : number)
     {
-        this.spaceMaker = new SpaceMaker(Math.round(distance / numberOfGroups));
+        this.spaceMaker = new SymmetricSpaceMaker(emptySpaceSize);
     }
 
     public GetName() : string {

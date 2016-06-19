@@ -1,5 +1,5 @@
 ﻿
-class SpaceMaker
+class SymmetricSpaceMaker
 {
     emptySpaceSize: number = 0;
     totalZeroCount: number = 0;
@@ -11,11 +11,7 @@ class SpaceMaker
     public CalcIfShouldSkipMoveToMakeSpace(positionInTheQueue: number): boolean
     {
         if (positionInTheQueue == 0) {
-            let isOdd: boolean = Math.floor(this.totalZeroCount / this.emptySpaceSize) % 2 == 1;
-
-            this.totalZeroCount++;
-
-            if (isOdd)
+            if (Math.floor(this.totalZeroCount++ / this.emptySpaceSize) % 2 == 1)
                 return true;
         }
 

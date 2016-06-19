@@ -6,10 +6,10 @@ window.onload = function () {
     movePolicies.push(new StuffJustHappensMovePolicy());
     movePolicies.push(new ChaosMovePolicy());
     movePolicies.push(new SinglePieceFlowMovePolicy());
-    movePolicies.push(new BatchMovePolicy(trackDistance, 20));
-    movePolicies.push(new StuffJustHappensSlackMovePolicy(1));
-    movePolicies.push(new ChaosSlackMovePolicy(1));
-    movePolicies.push(new SinglePieceFlowSlackMovePolicy(1));
+    movePolicies.push(new BatchMovePolicy(10));
+    movePolicies.push(new StuffJustHappensSlackMovePolicy(1, 2));
+    movePolicies.push(new ChaosSlackMovePolicy(1, 2));
+    movePolicies.push(new SinglePieceFlowSlackMovePolicy(1, 2));
     document.writeln("-- Throughput Analysis, track distance: " + trackDistance + ", iterations: " + numberOfIterations + " --  <br/>");
     for (var _i = 0, movePolicies_1 = movePolicies; _i < movePolicies_1.length; _i++) {
         var movePolicy = movePolicies_1[_i];

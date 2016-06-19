@@ -528,8 +528,8 @@ var ControlCenter = (function () {
     return ControlCenter;
 }());
 var BatchMovePolicy = (function () {
-    function BatchMovePolicy(distance, numberOfGroups) {
-        this.spaceMaker = new SpaceMaker(Math.round(distance / numberOfGroups));
+    function BatchMovePolicy(emptySpaceSize) {
+        this.spaceMaker = new SymmetricSpaceMaker(emptySpaceSize);
     }
     BatchMovePolicy.prototype.GetName = function () {
         return "Batch";
@@ -575,8 +575,8 @@ var StuffJustHappensMovePolicy = (function () {
     return StuffJustHappensMovePolicy;
 }());
 var StuffJustHappensSlackMovePolicy = (function () {
-    function StuffJustHappensSlackMovePolicy(spaceSize) {
-        this.spaceMaker = new SpaceMaker(spaceSize);
+    function StuffJustHappensSlackMovePolicy(spaceSize, groupSize) {
+        this.spaceMaker = new AsymmetricSpaceMaker(spaceSize, groupSize);
     }
     StuffJustHappensSlackMovePolicy.prototype.GetName = function () {
         return "StuffJustHappensSlack";
@@ -589,8 +589,8 @@ var StuffJustHappensSlackMovePolicy = (function () {
     return StuffJustHappensSlackMovePolicy;
 }());
 var ChaosSlackMovePolicy = (function () {
-    function ChaosSlackMovePolicy(spaceSize) {
-        this.spaceMaker = new SpaceMaker(spaceSize);
+    function ChaosSlackMovePolicy(spaceSize, groupSize) {
+        this.spaceMaker = new AsymmetricSpaceMaker(spaceSize, groupSize);
     }
     ChaosSlackMovePolicy.prototype.GetName = function () {
         return "ChaosSlack";
@@ -602,26 +602,43 @@ var ChaosSlackMovePolicy = (function () {
     };
     return ChaosSlackMovePolicy;
 }());
-var SpaceMaker = (function () {
-    function SpaceMaker(emptySpaceSize) {
+var SymmetricSpaceMaker = (function () {
+    function SymmetricSpaceMaker(emptySpaceSize) {
         this.emptySpaceSize = 0;
         this.totalZeroCount = 0;
         this.emptySpaceSize = emptySpaceSize;
     }
-    SpaceMaker.prototype.CalcIfShouldSkipMoveToMakeSpace = function (positionInTheQueue) {
+    SymmetricSpaceMaker.prototype.CalcIfShouldSkipMoveToMakeSpace = function (positionInTheQueue) {
         if (positionInTheQueue == 0) {
-            var isOdd = Math.floor(this.totalZeroCount / this.emptySpaceSize) % 2 == 1;
-            this.totalZeroCount++;
-            if (isOdd)
+            if (Math.floor(this.totalZeroCount++ / this.emptySpaceSize) % 2 == 1)
                 return true;
         }
         return false;
     };
-    return SpaceMaker;
+    return SymmetricSpaceMaker;
+}());
+var AsymmetricSpaceMaker = (function () {
+    function AsymmetricSpaceMaker(emptySpaceSize, groupSize) {
+        this.emptySpaceSize = 0;
+        this.groupSize = 0;
+        this.groupAndEmptySpaceSize = 0;
+        this.totalZeroCount = 0;
+        this.emptySpaceSize = emptySpaceSize;
+        this.groupSize = groupSize;
+        this.groupAndEmptySpaceSize = this.emptySpaceSize + this.groupSize;
+    }
+    AsymmetricSpaceMaker.prototype.CalcIfShouldSkipMoveToMakeSpace = function (positionInTheQueue) {
+        if (positionInTheQueue == 0) {
+            if ((this.totalZeroCount++ % this.groupAndEmptySpaceSize) + 1 > this.groupSize)
+                return true;
+        }
+        return false;
+    };
+    return AsymmetricSpaceMaker;
 }());
 var SinglePieceFlowSlackMovePolicy = (function () {
-    function SinglePieceFlowSlackMovePolicy(spaceSize) {
-        this.spaceMaker = new SpaceMaker(spaceSize);
+    function SinglePieceFlowSlackMovePolicy(spaceSize, groupSize) {
+        this.spaceMaker = new AsymmetricSpaceMaker(spaceSize, groupSize);
     }
     SinglePieceFlowSlackMovePolicy.prototype.GetName = function () {
         return "SinglePieceFlowSlack";

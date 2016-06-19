@@ -69,7 +69,8 @@
   <ItemGroup>
     <TypeScriptCompile Include="Metaphor\MovePolicies\ChaosSlackMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\SinglePieceFlowSlackMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\SpaceMaker.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\AsymmetricSpaceMaker.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\SymmetricSpaceMaker.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\StuffJustHappensSlackMovePolicy.ts" />
     <TypeScriptCompile Include="Models\BallModel.ts" />
     <TypeScriptCompile Include="Helpers\CompletionChain.ts" />
