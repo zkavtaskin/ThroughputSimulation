@@ -1,8 +1,8 @@
 ﻿
-class StuffJustHappensMovePolicy implements IMovePolicy
+class WaterfallMovePolicy implements IMovePolicy
 {
     public GetName(): string {
-        return "StuffJustHappens";
+        return "Waterfall";
     }
 
     public GetDistance(currentPositionInTheQueue: number): number

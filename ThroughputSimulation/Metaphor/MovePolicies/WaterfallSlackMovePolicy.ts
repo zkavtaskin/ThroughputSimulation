@@ -1,5 +1,5 @@
 ﻿
-class StuffJustHappensSlackMovePolicy implements IMovePolicy
+class WaterfallSlackMovePolicy implements IMovePolicy
 {
     spaceMaker: AsymmetricSpaceMaker;
 
@@ -8,7 +8,7 @@ class StuffJustHappensSlackMovePolicy implements IMovePolicy
     }
 
     public GetName(): string {
-        return "StuffJustHappensSlack";
+        return "WaterfallSlack";
     }
 
     public GetDistance(positionInTheQueue: number): number

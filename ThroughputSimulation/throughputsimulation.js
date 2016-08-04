@@ -589,30 +589,30 @@ var SinglePieceFlowMovePolicy = (function () {
     };
     return SinglePieceFlowMovePolicy;
 }());
-var StuffJustHappensMovePolicy = (function () {
-    function StuffJustHappensMovePolicy() {
-    }
-    StuffJustHappensMovePolicy.prototype.GetName = function () {
-        return "StuffJustHappens";
-    };
-    StuffJustHappensMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
-        return Math.round((Math.random() * 1));
-    };
-    return StuffJustHappensMovePolicy;
-}());
-var StuffJustHappensSlackMovePolicy = (function () {
-    function StuffJustHappensSlackMovePolicy(spaceSize, groupSize) {
+var WaterfallSlackMovePolicy = (function () {
+    function WaterfallSlackMovePolicy(spaceSize, groupSize) {
         this.spaceMaker = new AsymmetricSpaceMaker(spaceSize, groupSize);
     }
-    StuffJustHappensSlackMovePolicy.prototype.GetName = function () {
-        return "StuffJustHappensSlack";
+    WaterfallSlackMovePolicy.prototype.GetName = function () {
+        return "WaterfallSlack";
     };
-    StuffJustHappensSlackMovePolicy.prototype.GetDistance = function (positionInTheQueue) {
+    WaterfallSlackMovePolicy.prototype.GetDistance = function (positionInTheQueue) {
         if (this.spaceMaker.CalcIfShouldSkipMoveToMakeSpace(positionInTheQueue))
             return 0;
         return Math.round((Math.random() * 1));
     };
-    return StuffJustHappensSlackMovePolicy;
+    return WaterfallSlackMovePolicy;
+}());
+var WaterfallMovePolicy = (function () {
+    function WaterfallMovePolicy() {
+    }
+    WaterfallMovePolicy.prototype.GetName = function () {
+        return "Waterfall";
+    };
+    WaterfallMovePolicy.prototype.GetDistance = function (currentPositionInTheQueue) {
+        return Math.round((Math.random() * 1));
+    };
+    return WaterfallMovePolicy;
 }());
 var ChaosSlackMovePolicy = (function () {
     function ChaosSlackMovePolicy(spaceSize, groupSize) {

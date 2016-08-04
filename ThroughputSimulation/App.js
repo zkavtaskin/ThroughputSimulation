@@ -22,7 +22,7 @@ window.onload = function () {
     var simulatorPresenter3 = new SimulationVisualPresenter(new VisualFlowView("#simulationView3"));
     var multiPlexStatsView3 = new MultiPlexStatsView([new TextStatsView("#simulationView3"), throughputStatsView]);
     var controlsView3 = new AutoPlayControlsView();//new PhysicalControlsView("#simulationView3");
-    new ThroughputPresenter(simulatorPresenter3, multiPlexStatsView3, controlsView3, new StuffJustHappensMovePolicy(), 15);
+    new ThroughputPresenter(simulatorPresenter3, multiPlexStatsView3, controlsView3, new WaterfallMovePolicy(), 15);
 
     //new SimulationInMemoryPresenter(); 
     var simulatorPresenter4 = new SimulationVisualPresenter(new VisualFlowView("#simulationView4"));

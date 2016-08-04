@@ -24,7 +24,6 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="AppStats.js" />
-    <Content Include="HtmlPage1.html" />
     <Content Include="index.html" />
     <None Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="index_stats.html" />
@@ -72,7 +71,7 @@
     <TypeScriptCompile Include="Metaphor\MovePolicies\SinglePieceFlowSlackMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\AsymmetricSpaceMaker.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\SymmetricSpaceMaker.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\StuffJustHappensSlackMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\WaterfallSlackMovePolicy.ts" />
     <TypeScriptCompile Include="Models\BallModel.ts" />
     <TypeScriptCompile Include="Helpers\CompletionChain.ts" />
     <TypeScriptCompile Include="Views\IControlsView.ts" />
@@ -97,7 +96,7 @@
     <TypeScriptCompile Include="Metaphor\Train.ts" />
     <TypeScriptCompile Include="Metaphor\ControlCenter.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\SinglePieceFlowMovePolicy.ts" />
-    <TypeScriptCompile Include="Metaphor\MovePolicies\StuffJustHappensMovePolicy.ts" />
+    <TypeScriptCompile Include="Metaphor\MovePolicies\WaterfallMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\ChaosMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\BatchMovePolicy.ts" />
     <TypeScriptCompile Include="Metaphor\MovePolicies\IMovePolicy.ts" />
