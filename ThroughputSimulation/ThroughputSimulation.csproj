@@ -24,6 +24,7 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="AppStats.js" />
+    <Content Include="HtmlPage1.html" />
     <Content Include="index.html" />
     <None Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="index_stats.html" />
@@ -86,7 +87,8 @@
     <TypeScriptCompile Include="Presenters\SimulationVisualPresenter.ts" />
     <TypeScriptCompile Include="Models\StatsModel.ts" />
     <Content Include="App.js" />
-    <TypeScriptCompile Include="Views\ThroughputGlobalStatsView.ts" />
+    <TypeScriptCompile Include="Views\ThroughputStatsView.ts" />
+    <TypeScriptCompile Include="Views\ThroughputGlobalStatsOvertimeView.ts" />
     <TypeScriptCompile Include="Presenters\ThroughputPresenter.ts" />
     <TypeScriptCompile Include="Views\TextStatsView.ts" />
     <TypeScriptCompile Include="Views\PhysicalControlsView.ts" />

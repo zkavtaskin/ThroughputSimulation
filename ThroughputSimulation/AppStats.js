@@ -7,9 +7,9 @@ window.onload = function () {
     movePolicies.push(new ChaosMovePolicy());
     movePolicies.push(new SinglePieceFlowMovePolicy());
     movePolicies.push(new BatchMovePolicy(10));
-    movePolicies.push(new StuffJustHappensSlackMovePolicy(1, 2));
-    movePolicies.push(new ChaosSlackMovePolicy(1, 2));
-    movePolicies.push(new SinglePieceFlowSlackMovePolicy(1, 2));
+    movePolicies.push(new StuffJustHappensSlackMovePolicy(2, 1));
+    movePolicies.push(new ChaosSlackMovePolicy(2, 1));
+    movePolicies.push(new SinglePieceFlowSlackMovePolicy(1, 1));
     document.writeln("-- Throughput Analysis, track distance: " + trackDistance + ", iterations: " + numberOfIterations + " --  <br/>");
     for (var _i = 0, movePolicies_1 = movePolicies; _i < movePolicies_1.length; _i++) {
         var movePolicy = movePolicies_1[_i];
@@ -25,7 +25,7 @@ window.onload = function () {
         document.writeln("Average lead time: " + controlCenter.GetAverageTrainJourneyTicks() + " ticks per train <br/>");
         document.writeln("Interlocks: " + controlCenter.GetInterlocks() + " <br/>");
         document.writeln("Arrived: " + controlCenter.GetTrainsReachedDestination() + " <br/>");
-        document.writeln("Completed in %: " + (controlCenter.GetTrainsReachedDestination() / numberOfIterations) * 100 + " <br/>");
+        document.writeln("Arrived in %: " + (controlCenter.GetTrainsReachedDestination() / numberOfIterations) * 100 + " <br/>");
         document.writeln("Overall experiment run time: " + (end - start) + " <br/>");
         document.writeln("Delivery per tick: " + controlCenter.GetTrainsReachedDestination() / (end - start) + " <br/></p>");
     }

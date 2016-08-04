@@ -1,14 +1,10 @@
 ﻿
-class ThroughputGlobalStatsView implements IStatsView {
+class ThroughputGlobalStatsOvertimeView implements IStatsView {
 
     iterationLastNumberMap: HashMap<number> = {};
     dataSeriesMap: HashMap<DataSeries> = {};
     keyIsAlreadyInTheStoreMap: HashMap<boolean> = {};
     keys: Array<string> = new Array<string>();
-
-    constructor() {
-        //TODO : pub sub pattern to update the graph
-    }
 
     public Update(stats: StatsModel): void {
 

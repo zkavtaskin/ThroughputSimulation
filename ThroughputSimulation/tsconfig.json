@@ -25,7 +25,8 @@
     "Views/PhysicalControlsView.ts",
     "Views/TextStatsView.ts",
     "Views/AutoPlayControlsView.ts",
-    "Views/ThroughputGlobalStatsView.ts",
+    "Views/ThroughputGlobalStatsOvertimeView.ts",
+    "Views/ThroughputStatsView.ts",
     "Views/MultiPlexStatsView.ts",
 
     "Metaphor/Train.ts",

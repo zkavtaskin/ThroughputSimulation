@@ -354,14 +354,14 @@ var AutoPlayControlsView = (function () {
     };
     return AutoPlayControlsView;
 }());
-var ThroughputGlobalStatsView = (function () {
-    function ThroughputGlobalStatsView() {
+var ThroughputGlobalStatsOvertimeView = (function () {
+    function ThroughputGlobalStatsOvertimeView() {
         this.iterationLastNumberMap = {};
         this.dataSeriesMap = {};
         this.keyIsAlreadyInTheStoreMap = {};
         this.keys = new Array();
     }
-    ThroughputGlobalStatsView.prototype.Update = function (stats) {
+    ThroughputGlobalStatsOvertimeView.prototype.Update = function (stats) {
         if (!this.keyIsAlreadyInTheStoreMap[stats.Name]) {
             this.keys.push(stats.Name);
             this.keyIsAlreadyInTheStoreMap[stats.Name] = true;
@@ -379,7 +379,7 @@ var ThroughputGlobalStatsView = (function () {
         }
         this.iterationLastNumberMap[stats.Name] = stats.Arrived;
     };
-    ThroughputGlobalStatsView.prototype.GetDataSeries = function () {
+    ThroughputGlobalStatsOvertimeView.prototype.GetDataSeries = function () {
         var serieses = new Array();
         for (var _i = 0, _a = this.keys; _i < _a.length; _i++) {
             var key = _a[_i];
@@ -387,11 +387,37 @@ var ThroughputGlobalStatsView = (function () {
         }
         return serieses;
     };
-    ThroughputGlobalStatsView.prototype.Clear = function () {
+    ThroughputGlobalStatsOvertimeView.prototype.Clear = function () {
         this.dataSeriesMap = {};
         this.iterationLastNumberMap = {};
     };
-    return ThroughputGlobalStatsView;
+    return ThroughputGlobalStatsOvertimeView;
+}());
+var ThroughputStatsView = (function () {
+    function ThroughputStatsView() {
+        this.dataMap = {};
+        this.keyIsAlreadyInTheStoreMap = {};
+        this.keys = new Array();
+    }
+    ThroughputStatsView.prototype.Update = function (stats) {
+        if (!this.keyIsAlreadyInTheStoreMap[stats.Name]) {
+            this.keys.push(stats.Name);
+            this.keyIsAlreadyInTheStoreMap[stats.Name] = true;
+        }
+        this.dataMap[stats.Name] = stats.Arrived;
+    };
+    ThroughputStatsView.prototype.GetData = function () {
+        var data = new Array();
+        for (var _i = 0, _a = this.keys; _i < _a.length; _i++) {
+            var key = _a[_i];
+            data.push([key, this.dataMap[key]]);
+        }
+        return data;
+    };
+    ThroughputStatsView.prototype.Clear = function () {
+        this.dataMap = {};
+    };
+    return ThroughputStatsView;
 }());
 var MultiPlexStatsView = (function () {
     function MultiPlexStatsView(statsViews) {
