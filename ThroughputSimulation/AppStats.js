@@ -4,12 +4,12 @@ window.onload = function () {
     var numberOfIterations = 10000;
     var movePolicies = new Array();
     movePolicies.push(new WaterfallMovePolicy());
-    movePolicies.push(new ChaosMovePolicy());
-    movePolicies.push(new SinglePieceFlowMovePolicy());
-    movePolicies.push(new BatchMovePolicy(10));
     movePolicies.push(new WaterfallSlackMovePolicy(2, 1));
-    movePolicies.push(new ChaosSlackMovePolicy(2, 1));
+    movePolicies.push(new SinglePieceFlowMovePolicy());
     movePolicies.push(new SinglePieceFlowSlackMovePolicy(1, 1));
+    movePolicies.push(new BatchMovePolicy(33));
+    movePolicies.push(new ChaosMovePolicy());
+    movePolicies.push(new ChaosSlackMovePolicy(2, 1));
     document.writeln("-- Throughput Analysis, track distance: " + trackDistance + ", iterations: " + numberOfIterations + " --  <br/>");
     for (var _i = 0, movePolicies_1 = movePolicies; _i < movePolicies_1.length; _i++) {
         var movePolicy = movePolicies_1[_i];

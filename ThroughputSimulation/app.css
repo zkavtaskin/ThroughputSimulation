@@ -57,8 +57,8 @@
 }
 
 .simulationVisualiser .ball {
-    width:46px;
-    height:46px;
+    width:45px;
+    height:45px;
     background:red;
     border-radius:50%;
     position:absolute;
