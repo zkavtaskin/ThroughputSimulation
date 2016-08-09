@@ -18,12 +18,13 @@ When would you ever use this?
 
 It's really easy to use and create simulations like this:
 
-(images are coming soon)
+![alt text](https://github.com/zkavtaskin/ThroughputSimulation/blob/master/ReadMeImages/basic_demo.png?raw=true "Throughput Simulator Basic Demo")
+
 
 ## Advance Demo
 If you are a bit more adventures you can create comparison simulations with charts:
 
-(images are coming soon)
+![alt text](https://github.com/zkavtaskin/ThroughputSimulation/blob/master/ReadMeImages/advance_demo.png?raw=true "Throughput Simulator Advance Demo")
 
 ## Basic Setup
 
