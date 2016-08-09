@@ -11,7 +11,7 @@ The following delivery flow examples are supported out of the box:
 When would you ever use this?
 
 * Blog articles, it's a great way to make a point. 
-* Training, visualsing different delivery flows.
+* Training, visualising different delivery flows.
 * Monte Carlo method with Markov chain analysis for fun.
 
 ## Basic Demo
@@ -229,4 +229,4 @@ when the ball does move forward it moves at the random distance between 1 and 4
 ```
 
 ## Questions?
-Contact me on Twitter @zankavtaskin and don't forget to visit my blog [http://www.zankavtaskin.com]()
+Contact me on Twitter @zankavtaskin and don't forget to visit my blog [http://www.zankavtaskin.com](http://www.zankavtaskin.com)
