@@ -92,7 +92,8 @@ var ThroughputPresenter = (function () {
     }
     ThroughputPresenter.prototype.turnComplete = function () {
         var stats = new StatsModel(this.movePolicy.GetName(), this.controlCenter.GetAverageTrainJourneyTicks(), this.controlCenter.GetInterlocks(), this.controlCenter.GetTrainsReachedDestination(), performance.now() - this.start);
-        this.statsView.Update(stats);
+        if (this.statsView != null)
+            this.statsView.Update(stats);
     };
     ThroughputPresenter.prototype.onPlay = function () {
         if (this.controlCenter == null) {
@@ -106,7 +107,8 @@ var ThroughputPresenter = (function () {
     };
     ThroughputPresenter.prototype.stop = function () {
         this.controlCenter = null;
-        this.statsView.Clear();
+        if (this.statsView != null)
+            this.statsView.Clear();
     };
     return ThroughputPresenter;
 }());
